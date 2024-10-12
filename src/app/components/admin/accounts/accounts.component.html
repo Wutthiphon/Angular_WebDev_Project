@@ -1,0 +1,216 @@
+<div class="grid" *ngIf="!isLoad">
+    <div class="col-12">
+        <p-card header="ผู้ใช้งานในระบบทั้งหมด" subheader="Accounts">
+            <div class="grid">
+                <div class="col-12" align="right">
+                    <p-button icon="pi pi-plus" label="เพิ่มบัญชีผู้ใช้ Admin"
+                        styleClass="p-button-success p-button-sm p-button-rounded"
+                        (click)="add_dialog = true"></p-button>
+                </div>
+                <div class="col-12">
+                    <p-table [value]="accounts" [tableStyle]="{'min-width': '60rem'}" #accounts_table [filterDelay]="0"
+                        [globalFilterFields]="['first_name', 'last_name', 'username','email']">
+                        <ng-template pTemplate="caption">
+                            <div class="grid">
+                                <div class="col-12 md:col-4">
+                                    <span class="p-input-icon-left ml-auto w-full">
+                                        <i class="pi pi-search"></i>
+                                        <input pInputText type="text"
+                                            (input)="accounts_table.filterGlobal($any($event.target).value, 'contains')"
+                                            placeholder="ค้นหา..." />
+                                    </span>
+                                </div>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>
+                                    ลำดับที่
+                                </th>
+                                <th pSortableColumn="first_name">
+                                    ชื่อ
+                                    <p-sortIcon field="first_name"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="username">
+                                    ชื่อผู้ใช้งาน
+                                    <p-sortIcon field="username"></p-sortIcon>
+                                </th>
+                                <th pSortableColumn="permission_id">
+                                    สิทธิ์การเข้าถึง
+                                    <p-sortIcon field="permission_id"></p-sortIcon>
+                                </th>
+                                <th style="text-align: center;">
+                                    จัดการ
+                                </th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-account let-rowIndex="rowIndex">
+                            <tr>
+                                <td>
+                                    {{ rowIndex + 1 }}
+                                </td>
+                                <td>
+                                    <div class="flex align-content-center flex-wrap">
+                                        <div class="flex align-items-center">
+                                            <span *ngIf="account.image" class="mr-2">
+                                                <p-image [src]="api_url + '/profile/img/' + account.image"
+                                                    [preview]="true" styleClass="profile-image" width="30"></p-image>
+                                            </span>
+                                            <span *ngIf="!account.image" class="mr-2">
+                                                <img src="./assets/profile/user-286.png" class="profile-image"
+                                                    style="width: 2rem; background-color: rgb(239, 255, 230);">
+                                            </span>
+                                            {{ account.prefix + account.first_name + ' ' + account.last_name }}
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ account.username }}<br>
+                                    <b>Email: </b> {{ account.email }}
+                                </td>
+                                <td>
+                                    <b *ngIf="account.permission_id == 1" style="color: rgb(87, 87, 87);">
+                                        นักเรียน
+                                    </b>
+                                    <b *ngIf="account.permission_id == 2" style="color: rgb(159, 176, 255);">
+                                        ติวเตอร์
+                                    </b>
+                                    <b *ngIf="account.permission_id == 3" style="color: rgb(97, 139, 0);">
+                                        แอดมิน
+                                    </b>
+                                </td>
+                                <td>
+                                    <div align="center" *ngIf="account.user_id != my_user_id">
+                                        <p-button icon="pi pi-pencil" styleClass="p-button-rounded p-button-warning m-1"
+                                            pTooltip="แก้ไขข้อมูล" tooltipPosition="bottom"
+                                            (click)="editAccount(account)"></p-button>
+
+                                        <p-button icon="pi pi-trash" styleClass="p-button-rounded p-button-danger m-1"
+                                            pTooltip="ลบบัญชี" tooltipPosition="bottom"
+                                            (click)="deleteAccount(account)"></p-button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="5" style="text-align: center;">
+                                    ไม่พบข้อมูล
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+
+                </div>
+            </div>
+        </p-card>
+    </div>
+</div>
+
+<div class="grid" *ngIf="isLoad">
+    <div class="col-12" align="center">
+        <p-progressSpinner styleClass="p-progress-info" strokeWidth="8" fill="#ffffff" animationDuration=".5s"
+            [style]="{ 'width': '50px', 'height': '50px' }"></p-progressSpinner>
+    </div>
+    <div class="col-12" align="center">
+        กำลังโหลด...
+    </div>
+</div>
+
+<p-dialog header="สร้างบัญชีผู้ใช้ Admin" [(visible)]="add_dialog" [modal]="true"
+    [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12 md:col-6">
+            <label>ชื่อผู้ใช้งาน</label>
+            <input type="text" pInputText [(ngModel)]="add_dialog_data.username" name="input_username"
+                #input_username="ngModel" placeholder="ชื่อผู้ใช้งาน..." class="p-inputtext-sm" />
+        </div>
+        <div class="col-12 md:col-6">
+            <label>รหัสผ่าน</label>
+            <p-password [feedback]="false" [toggleMask]="true" placeholder="รหัสผ่าน" [toggleMask]="true"
+                name="input_password" styleClass="w-full" [(ngModel)]="add_dialog_data.password"
+                #input_password="ngModel"></p-password>
+        </div>
+
+        <div class="col-12 md:col-3">
+            <label>คำนำหน้า</label>
+            <p-dropdown [options]="prefix_arr" [(ngModel)]="add_dialog_data.prefix" placeholder="คำนำหน้า"
+                appendTo="body" name="input_prefix" #input_prefix="ngModel" [editable]="true" optionLabel="label"
+                optionValue="label"></p-dropdown>
+        </div>
+        <div class="col-12 md:col-5">
+            <label>ชื่อ</label>
+            <input type="text" pInputText [(ngModel)]="add_dialog_data.first_name" name="input_first_name"
+                #input_first_name="ngModel" placeholder="ชื่อ..." class="p-inputtext-sm" />
+        </div>
+        <div class="col-12 md:col-4">
+            <label>นามสกุล</label>
+            <input type="text" pInputText [(ngModel)]="add_dialog_data.last_name" name="input_last_name"
+                #input_last_name="ngModel" placeholder="นามสกุล..." class="p-inputtext-sm" />
+        </div>
+        <div class="col-12 md:col-3">
+            <label>เพศ</label>
+            <p-dropdown [options]="gender_arr" [(ngModel)]="add_dialog_data.gender" name="input_gender" appendTo="body"
+                optionLabel="label" optionValue="label" #input_gender="ngModel" placeholder="เลือกเพศ"
+                class="p-inputtext-sm"></p-dropdown>
+        </div>
+        <div class="col-12 md:col-9">
+            <label>E-mail</label>
+            <input type="email" pInputText [(ngModel)]="add_dialog_data.email" name="input_email" #input_email="ngModel"
+                placeholder="E-mail..." class="p-inputtext-sm" />
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="ui-dialog-buttonpane p-clearfix">
+            <button type="button" pButton icon="pi pi-times" label="ยกเลิก" (click)="add_dialog = false"
+                class="p-button-danger p-button-rounded" style="margin-right: .25em"></button>
+            <button type="button" pButton icon="pi pi-check" label="ยืนยัน" (click)="addAccountSubmit()"
+                class="p-button-success p-button-rounded" style="margin-right: .25em"></button>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="แก้ไขบัญชีผู้ใช้" [(visible)]="edit_dialog" [modal]="true"
+    [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12 md:col-3">
+            <label>คำนำหน้า</label>
+            <p-dropdown [options]="prefix_arr" [(ngModel)]="edit_dialog_data.prefix" placeholder="คำนำหน้า"
+                appendTo="body" name="input_prefix" #input_prefix="ngModel" [editable]="true" optionLabel="label"
+                optionValue="label"></p-dropdown>
+        </div>
+        <div class="col-12 md:col-5">
+            <label>ชื่อ</label>
+            <input type="text" pInputText [(ngModel)]="edit_dialog_data.first_name" name="input_first_name"
+                #input_first_name="ngModel" placeholder="ชื่อ..." class="p-inputtext-sm" />
+        </div>
+        <div class="col-12 md:col-4">
+            <label>นามสกุล</label>
+            <input type="text" pInputText [(ngModel)]="edit_dialog_data.last_name" name="input_last_name"
+                #input_last_name="ngModel" placeholder="นามสกุล..." class="p-inputtext-sm" />
+        </div>
+        <div class="col-12 md:col-3">
+            <label>เพศ</label>
+            <p-dropdown [options]="gender_arr" [(ngModel)]="edit_dialog_data.gender" name="input_gender" appendTo="body"
+                optionLabel="label" optionValue="label" #input_gender="ngModel" placeholder="เลือกเพศ"
+                class="p-inputtext-sm"></p-dropdown>
+        </div>
+        <div class="col-12 md:col-9">
+            <label>E-mail</label>
+            <input type="email" pInputText [(ngModel)]="edit_dialog_data.email" name="input_email"
+                #input_email="ngModel" placeholder="E-mail..." class="p-inputtext-sm" />
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="ui-dialog-buttonpane p-clearfix">
+            <button type="button" pButton icon="pi pi-times" label="ยกเลิก" (click)="edit_dialog = false"
+                class="p-button-danger p-button-rounded" style="margin-right: .25em"></button>
+            <button type="button" pButton icon="pi pi-check" label="ยืนยัน" (click)="editAccountSubmit()"
+                class="p-button-success p-button-rounded" style="margin-right: .25em"></button>
+        </div>
+    </ng-template>
+</p-dialog>

@@ -1,0 +1,52 @@
+::ng-deep .course-custom {
+  box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px,
+    rgba(9, 30, 66, 0.13) 0px 0px 1px 1px;
+
+  .p-card-body .p-card-title {
+    height: 100px;
+    max-height: 100px;
+  }
+}
+
+::ng-deep .lesson-card-custom {
+  box-shadow: rgba(107, 107, 107, 0.2) 0px 0px 0px 1px;
+  border-left: 9px solid #8ebeeb;
+}
+
+::ng-deep .lesson-card-custom:hover {
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  border-left: 9px solid #5c99d1;
+  transition: 0.3s;
+}
+
+::ng-deep .chapter-card-custom {
+  box-shadow: rgba(107, 107, 107, 0.2) 0px 0px 0px 1px;
+  border-left: 9px solid #ff7e7e;
+}
+
+::ng-deep .chapter-card-custom:hover {
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  border-left: 9px solid #ff7e7e;
+  transition: 0.3s;
+}
+
+::ng-deep .exam-card-custom {
+  box-shadow: rgba(107, 107, 107, 0.2) 0px 0px 0px 1px;
+  border-left: 9px solid #8ebeeb;
+}
+
+::ng-deep .exam-card-custom:hover {
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
+  border-left: 9px solid #5c99d1;
+  transition: 0.3s;
+}
+
+.custom-border {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+}

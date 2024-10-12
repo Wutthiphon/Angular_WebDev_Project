@@ -1,0 +1,78 @@
+<div class="grid" *ngIf="!isLoad">
+    <div class="col-12 md:col-3" *ngFor="let course of courseList">
+        <p-card styleClass="h-full course-card" [header]="course.course_name"
+            [subheader]="'ผู้สอน: ' + course.users_account.first_name + ' ' + course.users_account.last_name">
+            <ng-template pTemplate="header">
+                <img alt="Card" onerror="this.src='./assets/cover/null-cover.png'"
+                    [src]="course.image ? api_url + '/public/' + course.image : './assets/cover/null-cover.png'" />
+            </ng-template>
+            <div class="grid">
+                <div class="col-12" style="height: 60px;">
+                    {{ course.course_description | slice:0:50 }}{{ course.course_description.length > 50 ? '...' : '' }}
+                </div>
+
+                <div class="col-12" align="center" style="height: 30px;">
+                    <p-tag icon="pi pi-user" value="ฟรี" *ngIf="!course.course_visibility"></p-tag>
+                    <p-tag icon="pi pi-star-fill" value="มีค่าสมัคร" severity="danger"
+                        *ngIf="course.course_visibility"></p-tag>
+                </div>
+                <div class="col-12" align="center" style="height: 30px;">
+                    <b *ngIf="course.course_visibility">ค่าสมัคร: {{ course.cost | number : '1.2-2' }} บาท</b>
+                </div>
+
+                <div class="col-12" align="center">
+                    <p-button label="รายละเอียด" styleClass="p-button-info p-button-sm mr-1" *ngIf="!can_manage"
+                        (onClick)="onShowInfoCourseDialog(course)" icon="pi pi-info"></p-button>
+                    <p-button label="จัดการคอร์สเรียน" styleClass="p-button-secondary p-button-sm" *ngIf="can_manage"
+                        [routerLink]="'/course/' + course.course_id" icon="pi pi-sign-in"></p-button>
+
+                    <p-button label="เข้าร่วม" styleClass="p-button-success p-button-sm"
+                        *ngIf="can_register && !course.isRegister" (onClick)="onRegisterCourse(course)"
+                        icon="pi pi-sign-in"></p-button>
+                </div>
+            </div>
+        </p-card>
+    </div>
+</div>
+
+<div class="grid" *ngIf="isLoad">
+    <div class="col-12 md:col-3" *ngFor="let course of [0,1,2,3]">
+        <p-card styleClass="h-full p-card-custom">
+            <p-skeleton width="100px" height="40px" styleClass="mb-1"></p-skeleton>
+            <p-skeleton width="200px" height="20px" styleClass="mb-1"></p-skeleton>
+            <p-skeleton width="100%" height="150px" styleClass="mb-1"></p-skeleton>
+            <p-skeleton width="100%" height="80px" styleClass="mb-1"></p-skeleton>
+            <p-skeleton width="200px" height="40px" styleClass="mb-1"></p-skeleton>
+        </p-card>
+    </div>
+</div>
+
+<p-dialog [header]="dialog_show_info_course_data.course_name" [(visible)]="dialog_show_info_course" [modal]="true"
+    [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid" *ngIf="dialog_show_info_course && dialog_show_info_course_data">
+        <div class="col-12">
+            <b>รายละเอียด</b>
+        </div>
+        <div class="col-12" [innerHTML]="dialog_show_info_course_data.course_description"></div>
+        <div class="col-12">
+            <b>บทเรียน</b>
+            <ul type="squeare" *ngIf="dialog_show_info_course_data.course_lesson.length > 0">
+                <li *ngFor="let lesson of dialog_show_info_course_data.course_lesson">
+                    {{ lesson.lesson_name }}
+                </li>
+            </ul>
+            <label *ngIf="dialog_show_info_course_data.course_lesson.length == 0"><br>ยังไม่มีบทเรียน</label>
+        </div>
+
+        <div class="col-12" align="center">
+            <b>วิธีการชำระเงิน</b><br>
+            <img alt="Card" onerror="this.src='./assets/cover/null-money-cover.png'"
+                *ngIf="dialog_show_info_course_data.img_account" style="width: 100%;"
+                [src]="dialog_show_info_course_data.img_account ? api_url + '/public/' + dialog_show_info_course_data.img_account : './assets/cover/null-money-cover.png'" />
+            <label *ngIf="!dialog_show_info_course_data.img_account">
+                <br>
+                ไม่ระบุวิธีการชำระเงิน กรุณาแจ้งผู้ดูแลระบบ
+            </label>
+        </div>
+    </div>
+</p-dialog>

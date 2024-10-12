@@ -1,0 +1,773 @@
+<div class="grid" *ngIf="!isLoad">
+    <div class="col-12">
+        <p-card [header]="select_course_info.course_name">
+            <div class="grid">
+                <div class="col-12">
+                    <p-tabMenu [model]="menu_items" [activeItem]="menu_items_active"
+                        (activeItemChange)="onActiveItemChange($event)"></p-tabMenu>
+                </div>
+
+                <div class="col-12" *ngIf="menu_items_active == menu_items[0]">
+                    <div class="grid">
+                        <div class="col-12 md:col-8">
+                            <div class="grid">
+                                <div class="col-12 md:col-12">
+                                    <label>ชื่อคอร์ส</label>
+                                    <input type="text" pInputText [(ngModel)]="select_course_info.course_name"
+                                        name="input_course_name" #input_course_name="ngModel" placeholder="ชื่อคอร์ส..."
+                                        class="p-inputtext-sm" />
+                                </div>
+                                <div class="col-12 md:col-12">
+                                    <label>รายละเอียดคอร์ส</label>
+                                    <textarea pInputTextarea [(ngModel)]="select_course_info.course_description"
+                                        name="input_course_description" #input_course_description="ngModel"
+                                        placeholder="รายละเอียดคอร์ส..." [rows]="5" class="p-inputtext-sm"></textarea>
+                                </div>
+                                <div class="col-12 md:col-12">
+                                    <label>รูปแบบคอร์ส</label><br>
+                                    ฟรี &nbsp;
+                                    <p-inputSwitch [(ngModel)]="select_course_info.course_have_price"
+                                        name="input_course_have_price" #input_course_have_price="ngModel">
+                                    </p-inputSwitch> &nbsp;มีค่าเรียน
+                                </div>
+                                <div class="col-12 md:col-4" *ngIf="select_course_info.course_have_price">
+                                    <label>ราคาคอร์ส</label>
+                                    <p-inputNumber type="number" [(ngModel)]="select_course_info.course_price"
+                                        name="input_course_price" styleClass="w-full" suffix=" บาท"
+                                        #input_course_price="ngModel" placeholder="ราคาคอร์ส..."
+                                        class="p-inputtext-sm" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 md:col-4" align="center">
+                            <div class="grid">
+                                <div class="col-12">
+                                    <b>รูปภาพปก</b><br>
+                                    <img onerror="this.src='./assets/cover/null-cover.png'"
+                                        [src]="select_course_info.cover_image != null ? api_url + '/public/' + select_course_info.cover_image : './assets/cover/null-cover.png'"
+                                        alt="Cover Image" style="width: 100%; height: auto;max-width: 360px;">
+                                    <br>
+                                    <button pButton type="button" label="เปลี่ยนรูปภาพปก" icon="pi pi-pencil"
+                                        (click)="CoverImageEditSelect.click()"
+                                        class="p-button-outlined p-button-sm p-button-rounded"></button>
+                                    <input #CoverImageEditSelect hidden="true" type="file"
+                                        accept=".heic,.jpeg,.jpg,.png,.gif"
+                                        (change)="selectCoverImage($event,'edit')" />
+                                </div>
+                                <div class="col-12">
+                                    <b>รูปภาพวิธีการชำระเงิน</b><br>
+                                    <img onerror="this.src='./assets/cover/null-money-cover.png'"
+                                        [src]="select_course_info.payment_image != null ? api_url + '/public/' + select_course_info.payment_image : './assets/cover/null-money-cover.png'"
+                                        alt="Cover Image" style="width: 100%; height: auto;max-width: 360px;">
+                                    <br>
+                                    <button pButton type="button" label="เปลี่ยนรูปภาพวิธีการชำระเงิน"
+                                        icon="pi pi-pencil" (click)="PaymentImageEditSelect.click()"
+                                        class="p-button-outlined p-button-sm p-button-rounded"></button>
+                                    <input #PaymentImageEditSelect hidden="true" type="file"
+                                        accept=".heic,.jpeg,.jpg,.png,.gif"
+                                        (change)="selectCoverImage($event,'payment_edit')" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12" align="right">
+                        <p-button label="ลบคอร์ส" styleClass="p-button-danger p-button-rounded p-button-sm m-1"
+                            icon="pi pi-times" (click)="onDeleteCourse()"></p-button>
+
+                        <p-button label="บันทึก" styleClass="p-button-success p-button-rounded p-button-sm m-1"
+                            icon="pi pi-save" (click)="editCourseSubmit()"></p-button>
+                    </div>
+                </div>
+
+                <div class="col-12" *ngIf="menu_items_active == menu_items[1]">
+                    <p-table [value]="select_course_info.register_user" [tableStyle]="{ 'min-width': '50rem' }">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>ลำดับ</th>
+                                <th>คำนำหน้า</th>
+                                <th>ชื่อ</th>
+                                <th>นามสกุล</th>
+                                <th>สถานะ</th>
+                                <th>หลักฐาน</th>
+                                <th style="width: 230px;text-align: center;">อนุมัติจบ</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-reg let-rowIndex="rowIndex">
+                            <tr>
+                                <td>{{ rowIndex + 1 }}</td>
+                                <td>{{ reg.users_account.prefix }}</td>
+                                <td>{{ reg.users_account.first_name }}</td>
+                                <td>{{ reg.users_account.last_name }}</td>
+                                <td>
+                                    <b *ngIf="reg.registration_status == 0"
+                                        style="color: red;">ยังลงทะเบียนไม่สำเร็จ</b>
+                                    <b *ngIf="reg.registration_status == 1 && reg.users_reg_transfer_document.length > 0"
+                                        style="color: orange;">รอการตรวจสอบ</b>
+                                    <b style="color: red"
+                                        *ngIf="reg.registration_status == 1 && reg.users_reg_transfer_document.length == 0">รออัปโหลดหลักฐานการชำระเงิน</b>
+                                    <b *ngIf="reg.registration_status == 2 && reg.completion_status == 0"
+                                        style="color: green;">ลงทะเบียนสำเร็จ</b>
+                                    <b *ngIf="reg.registration_status == 2 && reg.completion_status == 1"
+                                        style="color: blue;">จบการศึกษา</b>
+                                </td>
+                                <td>
+                                    <p-button label="ดูสลิป" *ngIf="reg.users_reg_transfer_document.length > 0"
+                                        (onClick)="openReceiptDialog(reg.users_reg_transfer_document)"
+                                        styleClass="p-button-info p-button-sm p-button-rounded m-1"
+                                        icon="pi pi-eye"></p-button>
+
+                                    <p-button label="อนุมัติ"
+                                        styleClass="p-button-success p-button-sm p-button-rounded m-1"
+                                        (onClick)="onApproveRegisterCourse(reg.registration_id)"
+                                        *ngIf="reg.registration_status == 1 && reg.users_reg_transfer_document.length > 0"
+                                        icon="pi pi-check"></p-button>
+
+                                    <p-button label="ปฏิเสธ"
+                                        styleClass="p-button-danger p-button-sm p-button-rounded m-1"
+                                        (onClick)="onRejectRegisterCourse(reg.registration_id)"
+                                        *ngIf="reg.registration_status == 1 && reg.users_reg_transfer_document.length > 0"
+                                        icon="pi pi-times"></p-button>
+                                </td>
+                                <td>
+                                    <div align="center" *ngIf="reg.registration_status == 2">
+                                        <p-button label="การทำแบบทดสอบ" (click)="onViewExamTest(reg)"
+                                            styleClass="p-button-secondary p-button-sm p-button-rounded m-1"
+                                            icon="pi pi-eye"></p-button>
+                                        <p-button label="อนุมัติจบ" *ngIf="reg.completion_status == 0"
+                                            (click)="onApproveCompletionCourse(reg.registration_id)"
+                                            styleClass="p-button-success p-button-sm p-button-rounded m-1"
+                                            icon="pi pi-check"></p-button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="emptymessage">
+                            <tr>
+                                <td colspan="6" style="text-align: center;">
+                                    ไม่พบข้อมูล
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+
+                <div class="col-12" *ngIf="menu_items_active == menu_items[2]">
+                    <div class="grid">
+                        <div class="col-12" align="right" *ngIf="!select_lesson_id">
+                            <p-button label="สร้างบทเรียน" styleClass="p-button-success p-button-rounded p-button-sm"
+                                (onClick)="onCreateLesson()" icon="pi pi-plus"></p-button>
+                        </div>
+                        <div class="col-12" *ngIf="select_lesson_id" align="left">
+                            <p-button label="ย้อนกลับ" styleClass="p-button-secondary p-button-sm m-1"
+                                (click)="onBackToLesson()" icon="pi pi-arrow-left"></p-button>
+                            <p-button label="แก้ไขชื่อบทเรียน" styleClass="p-button-warning p-button-sm m-1"
+                                (onClick)="onEditLesson()" icon="pi pi-pencil"></p-button>
+                            <p-button label="ลบบทเรียน" styleClass="p-button-danger p-button-sm m-1"
+                                (onClick)="onDeleteLesson()" icon="pi pi-times"></p-button>
+                        </div>
+
+                        <div class="col-12" *ngIf="!isLoad_lesson && !select_lesson_id" align="center">
+                            <div class="grid" *ngIf="lesson_array.length > 0" align="left">
+                                <div class="col-12 md:col-3" *ngFor="let lesson of lesson_array">
+                                    <p-card styleClass="p-card-custom lesson-card-custom h-full"
+                                        [style]="{cursor: 'pointer'}" (click)="onSelectLesson(lesson.lesson_id)">
+                                        <div class="flex justify-content-between align-content-center flex-wrap">
+                                            <div style="max-width: 80%;">
+                                                <b>{{ lesson.lesson_name }}</b><br>
+                                                จำนวนบทเรียน: {{ lesson._count.lesson_chapter || 0 }} บท
+                                            </div>
+                                            <i
+                                                class="pi pi-chevron-right flex align-items-center justify-content-center"></i>
+                                        </div>
+                                    </p-card>
+                                </div>
+                            </div>
+
+                            <label *ngIf="lesson_array.length == 0">คุณยังไม่ได้เพิ่มเนื้อหาบทเรียน</label>
+                        </div>
+
+                        <div class="col-12" *ngIf="!isLoad_lesson && select_lesson_id" align="center">
+                            <div class="grid">
+                                <div class="col-12">
+                                    <h1>บทเรียน: {{ chapter_array.lesson_name }}</h1>
+                                </div>
+
+                                <div class="col-12" align="right">
+                                    <p-button label="เพิ่มเนื้อหา"
+                                        styleClass="p-button-success p-button-rounded p-button-sm"
+                                        (click)="onAddContent()" icon="pi pi-plus"></p-button>
+                                </div>
+
+                                <div class="col-12" align="center">
+                                    <div class="grid" *ngIf="chapter_array.lesson_chapter.length > 0" align="left">
+                                        <div class="col-12 md:col-3 "
+                                            *ngFor="let chapter of chapter_array.lesson_chapter"
+                                            (click)="onViewContent(chapter.lesson_chapter_id)">
+                                            <p-card styleClass="p-card-custom chapter-card-custom h-full"
+                                                [style]="{cursor: 'pointer'}">
+                                                <div
+                                                    class="flex justify-content-between align-content-center flex-wrap">
+                                                    <div style="max-width: 80%;">
+                                                        <b>{{ chapter.content_name || 'ไม่ทราบชื่อ' }}</b><br>
+                                                        ประเภทเนื้อหา :
+                                                        {{ chapter.content_type == 1 ? 'VDO Youtube' : 'ข้อความ' }}
+                                                    </div>
+                                                    <i
+                                                        class="pi pi-chevron-right flex align-items-center justify-content-center"></i>
+                                                </div>
+                                            </p-card>
+                                        </div>
+                                    </div>
+
+                                    <label
+                                        *ngIf="chapter_array.lesson_chapter.length == 0">คุณยังไม่ได้เพิ่มเนื้อหาในบทเรียน</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12" *ngIf="isLoad_lesson">
+                            <div class="grid">
+                                <div class="col-12" align="center">
+                                    <p-progressSpinner styleClass="p-progress-info" strokeWidth="8" fill="#ffffff"
+                                        animationDuration=".5s"
+                                        [style]="{ 'width': '50px', 'height': '50px' }"></p-progressSpinner>
+                                </div>
+                                <div class="col-12" align="center">
+                                    {{ !isLoad_lesson && select_lesson_id ? 'กำลังโหลดบทเรียน...' :
+                                    'กำลังโหลดเนื้อหาในบทเรียน...' }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12" *ngIf="menu_items_active == menu_items[3]">
+                    <div class="grid">
+                        <div class="col-12 md:col-4" align="left"
+                            *ngIf="!isLoad_exam || (isLoad_exam && select_exam_lesson_id)">
+                            <p-dropdown [options]="exam_lesson_array" [(ngModel)]="select_exam_lesson_id"
+                                (onChange)="loadLessonExam()" appendTo="body" placeholder="เลือกบทเรียน"
+                                optionLabel="lesson_name" optionValue="lesson_id" styleClass="w-full"></p-dropdown>
+                        </div>
+                        <div class="col-12 md:col-8" align="right" *ngIf="!isLoad_exam && !select_exam_id">
+                            <p-button label="สร้างแบบทดสอบ" styleClass="p-button-success p-button-rounded p-button-sm"
+                                (onClick)="onCreateExamTest()" icon="pi pi-plus"></p-button>
+                        </div>
+
+                        <div class="col-12" *ngIf="!isLoad_exam && select_exam_lesson_id && !select_exam_id">
+                            <div class="grid" *ngIf="exam_array.length > 0">
+                                <div class="col-12 md:col-3" *ngFor="let exam of exam_array">
+                                    <p-card styleClass="p-card-custom exam-card-custom h-full"
+                                        [style]="{cursor: 'pointer'}" (click)="onSelectExam(exam.exam_id)">
+                                        <div class="flex justify-content-between align-content-center flex-wrap">
+                                            <div style="max-width: 80%;">
+                                                <b>{{ exam.exam_name }}</b><br>
+                                                จำนวนโจทย์: {{ exam._count.course_exam_problem }} ข้อ
+                                            </div>
+                                            <i
+                                                class="pi pi-chevron-right flex align-items-center justify-content-center"></i>
+                                        </div>
+                                    </p-card>
+                                </div>
+                            </div>
+
+                            <p *ngIf="exam_array.length == 0" style="text-align: center;">
+                                คุณยังไม่ได้สร้างแบบทดสอบ
+                            </p>
+                        </div>
+
+                        <div class="col-12" *ngIf="select_exam_id" align="left">
+                            <p-button label="ย้อนกลับ" styleClass="p-button-secondary p-button-sm m-1"
+                                (click)="onBackToLessonExam()" icon="pi pi-arrow-left"></p-button>
+                            <p-button label="แก้ไขชื่อแบบทดสอบ" styleClass="p-button-warning p-button-sm m-1"
+                                (onClick)="onEditLessonExam()" icon="pi pi-pencil"></p-button>
+                            <p-button label="ลบแบบทดสอบ" styleClass="p-button-danger p-button-sm m-1"
+                                (onClick)="onDeleteLessonExam()" icon="pi pi-times"></p-button>
+                        </div>
+
+                        <div class="col-12" *ngIf="!isLoad_exam && select_exam_lesson_id && select_exam_id">
+                            <div class="grid">
+                                <div class="col-12">
+                                    <h1>แบบทดสอบ: {{ select_exam_name }}</h1>
+                                </div>
+
+                                <div class="col-12" *ngFor="let problem of exam_problem_array;let i = index">
+                                    <div class="grid custom-border">
+                                        <div class="col-12">
+                                            <input type="text" pInputText [(ngModel)]="problem.problem_name"
+                                                name="input_exam_problem_name" #input_exam_problem_name="ngModel"
+                                                placeholder="โจทย์..." />
+                                        </div>
+
+                                        <div class="col-12 mt-2">
+                                            <div class="flex flex-column gap-3">
+                                                <div *ngFor="let choice of problem.choices;let j = index"
+                                                    class="field-checkbox">
+                                                    <p-radioButton [value]="choice" name="input_exam_problem_choice"
+                                                        #input_exam_problem_choice="ngModel"
+                                                        [(ngModel)]="problem.correct_choice"></p-radioButton>
+
+                                                    <input type="text" pInputText [(ngModel)]="choice.label"
+                                                        name="input_exam_problem_choice_label" class="ml-2"
+                                                        #input_exam_problem_choice_label="ngModel"
+                                                        [placeholder]="'ตัวเลือกที่ ' + (j+1) + '...'" />
+
+                                                    <p-button *ngIf="problem.choices.length > 1"
+                                                        styleClass="p-button-danger p-button-sm ml-2"
+                                                        (click)="onDeleteChoice(i,j)" icon="pi pi-times"></p-button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <div class="flex justify-content-between align-content-center">
+                                                <div>
+                                                    <p-button label="เพิ่มตัวเลือก"
+                                                        styleClass="p-button-success p-button-rounded p-button-sm"
+                                                        (click)="onAddChoice(i)" icon="pi pi-plus"></p-button>
+                                                </div>
+                                                <div *ngIf="exam_problem_array.length > 1">
+                                                    <p-button label="ลบโจทย์"
+                                                        styleClass="p-button-danger p-button-rounded p-button-sm"
+                                                        (click)="onDeleteProblem(i)" icon="pi pi-times"></p-button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-12" align="center">
+                                    <button pButton type="button" label="เพิ่มโจทย์"
+                                        class="p-button-warning p-button-rounded p-button-sm m-1"
+                                        (click)="onAddProblem()" icon="pi pi-plus"></button>
+
+                                    <button pButton type="button" label="บันทึก"
+                                        class="p-button-success p-button-rounded p-button-sm m-1"
+                                        (click)="onSubmitExamTest()" icon="pi pi-save"></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12" *ngIf="isLoad_exam">
+                            <div class="grid">
+                                <div class="col-12" align="center">
+                                    <p-progressSpinner styleClass="p-progress-info" strokeWidth="8" fill="#ffffff"
+                                        animationDuration=".5s"
+                                        [style]="{ 'width': '50px', 'height': '50px' }"></p-progressSpinner>
+                                </div>
+                                <div class="col-12" align="center">
+                                    กำลังโหลดข้อมูล...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p-card>
+    </div>
+</div>
+
+<div class="grid" *ngIf="isLoad">
+    <div class="col-12" align="center">
+        <p-progressSpinner styleClass="p-progress-info" strokeWidth="8" fill="#ffffff" animationDuration=".5s"
+            [style]="{ 'width': '50px', 'height': '50px' }"></p-progressSpinner>
+    </div>
+    <div class="col-12" align="center">
+        กำลังโหลด...
+    </div>
+</div>
+
+<p-dialog header="ปรับแต่งรูปภาพ" [(visible)]="imageCropDialog" [modal]="true"
+    [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12 md:col-3">
+            <p-card header="ตัวอย่าง">
+                <img [src]="imageCropData_croppedImage" style="width: 100%" />
+            </p-card>
+        </div>
+        <div class="col-12 md:col-9">
+            <p-card header="ตัวปรับแต่ง">
+                <image-cropper [imageChangedEvent]="imageCropData_imageChangedEvent" [maintainAspectRatio]="true"
+                    [resizeToWidth]="1280" [resizeToHeight]="640" [aspectRatio]="2 / 1"
+                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                    (loadImageFailed)="loadImageFailed()" style="width: 100%;height: 400px;">
+                </image-cropper>
+            </p-card>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ยกเลิก" icon="pi pi-times" styleClass="p-button-sm p-button-danger mt-4"
+                    (onClick)="imageCropDialog = false"></p-button>
+                <p-button label="บันทึก" icon="pi pi-save" styleClass="p-button-sm p-button-success mt-4"
+                    (onClick)="uploadCoverImage()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="ดูสลิป" [(visible)]="view_receipt_dialog" [modal]="true"
+    [style]="{ width: '40vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12" *ngFor="let recept of view_receipt_dialog_img" align="center">
+            <p-image [src]="api_url + '/public/' + recept.transfer_document" width="100%" appendTo="body"
+                [preview]="true"></p-image>
+            <br>
+            <b *ngIf="recept.comment" style="color: red;">หมายเหตุ: {{ recept.comment }}</b>
+            <p-divider></p-divider>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ปิด" icon="pi pi-times" styleClass="p-button-sm p-button-secondary mt-4"
+                    (onClick)="view_receipt_dialog = false;view_receipt_dialog_img = null"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="ปฏิเสธ" [(visible)]="reject_comment_dialog" [modal]="true"
+    [style]="{ width: '40vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12">
+            <textarea pInputTextarea [(ngModel)]="reject_comment" name="input_reject_comment"
+                #input_reject_comment="ngModel" placeholder="หมายเหตุ..." [rows]="5" class="p-inputtext-sm"></textarea>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ยกเลิก" icon="pi pi-times" styleClass="p-button-sm p-button-danger mt-4"
+                    (onClick)="reject_comment_dialog = false;reject_comment = ''"></p-button>
+                <p-button label="บันทึก" icon="pi pi-save" styleClass="p-button-sm p-button-success mt-4"
+                    (onClick)="onRejectRegisterCourseSubmit()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="สร้างบทเรียนใหม่" [(visible)]="create_lesson_dialog" [modal]="true"
+    [style]="{ width: '50vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12">
+            <label>ชื่อบทเรียน</label>
+            <input type="text" pInputText [(ngModel)]="create_lesson_data.lesson_name" name="input_create_lesson_name"
+                #input_create_lesson_name="ngModel" placeholder="ชื่อบทเรียน..." class="p-inputtext-sm" />
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ปิด" icon="pi pi-times" styleClass="p-button-sm p-button-secondary mt-4"
+                    (onClick)="create_lesson_dialog = false"></p-button>
+                <p-button label="สร้างบทเรียนใหม่" [icon]="isApiSaving ? 'pi-spin pi-spinner' : 'pi pi-plus'"
+                    styleClass="p-button-sm p-button-success mt-4" [disabled]="isApiSaving"
+                    (onClick)="onSubmitCreateLesson()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="แก้ไขชื่อบทเรียน" [(visible)]="edit_lesson_dialog" [modal]="true"
+    [style]="{ width: '50vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12">
+            <label>ชื่อบทเรียน</label>
+            <input type="text" pInputText [(ngModel)]="edit_lesson_data.lesson_name" name="input_edit_lesson_name"
+                #input_edit_lesson_name="ngModel" placeholder="ชื่อบทเรียน..." class="p-inputtext-sm" />
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ปิด" icon="pi pi-times" styleClass="p-button-sm p-button-secondary mt-4"
+                    (onClick)="edit_lesson_dialog = false"></p-button>
+                <p-button label="แก้ไขชื่อบทเรียน" [icon]="isApiSaving ? 'pi-spin pi-spinner' : 'pi pi-pencil'"
+                    styleClass="p-button-sm p-button-warning mt-4" [disabled]="isApiSaving"
+                    (onClick)="onSubmitEditLesson()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="เพิ่มเนื้อหา" [(visible)]="create_chapter_dialog" [modal]="true"
+    [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false" [maximizable]="true">
+    <div class="grid">
+        <div class="col-12 md:col-3">
+            <label>ประเภทเนื้อหา</label>
+            <p-dropdown [options]="chapter_data_type" [(ngModel)]="create_chapter_data.content_type" appendTo="body"
+                placeholder="เลือกประเภทเนื้อหา" optionLabel="label" optionValue="value"
+                styleClass="w-full"></p-dropdown>
+        </div>
+        <div class="col-12 md:col-9">
+            <label>ชื่อเนื้อหา</label>
+            <input type="text" pInputText [(ngModel)]="create_chapter_data.content_name"
+                name="input_create_chapter_name" #input_create_chapter_name="ngModel" placeholder="ชื่อเนื้อหา..."
+                class="p-inputtext-sm" />
+        </div>
+        <div class="col-12 md:col-12" *ngIf="create_chapter_data.content_type != null">
+            <label>{{ create_chapter_data.content_type == 1 ? 'ที่อยู่ VDO จาก Youtube' : 'เนื้อหา'}}</label>
+            <input type="text" pInputText [(ngModel)]="create_chapter_data.content_data"
+                placeholder="https://youtu.be/...." *ngIf="create_chapter_data.content_type == 1"
+                name="input_create_chapter_data" #input_create_chapter_data="ngModel" class="p-inputtext-sm" />
+            <p-editor [(ngModel)]="create_chapter_data.content_data" [style]="{ height: '450px'}"
+                *ngIf="create_chapter_data.content_type == 2">
+                <ng-template pTemplate="header">
+                    <span class="ql-formats">
+                        <select class="ql-size"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                        <button class="ql-strike"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-script" value="sub"></button>
+                        <button class="ql-script" value="super"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-blockquote"></button>
+                        <button class="ql-code-block"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                        <button class="ql-indent" value="-1"></button>
+                        <button class="ql-indent" value="+1"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-direction" value="rtl"></button>
+                        <select class="ql-align"></select>
+                    </span>
+                </ng-template>
+            </p-editor>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ปิด" icon="pi pi-times" styleClass="p-button-sm p-button-secondary mt-4"
+                    (onClick)="create_chapter_dialog = false"></p-button>
+                <p-button label="สร้างเนื้อหา" [icon]="isApiSaving ? 'pi-spin pi-spinner' : 'pi pi-plus'"
+                    (onClick)="onSubmitAddContent()" [disabled]="isApiSaving"
+                    styleClass="p-button-sm p-button-success mt-4"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [header]="!view_chapter_data.edit ? 'ดูเนื้อหา' : 'แก้ไขเนื้อหา'" [(visible)]="view_chapter_dialog"
+    [modal]="true" [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false"
+    [maximizable]="true">
+    <div class="grid" *ngIf="!view_chapter_data.edit">
+        <div class="col-12">
+            <h1>{{ view_chapter_data.content_name }}</h1>
+            <div class="ql-editor" [innerHTML]="view_chapter_data.content_data | safeHtml"
+                *ngIf="view_chapter_data.content_type == 2">
+            </div>
+            <div *ngIf="view_chapter_data.content_type == 1" align="center">
+                <iframe [src]="view_chapter_data.content_data | safe" title="YouTube video player" frameborder="0"
+                    style="width: 960px;height: 540px;max-width: 100%"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+    <div class="grid" *ngIf="view_chapter_data.edit">
+        <div class="col-12 md:col-3">
+            <label>ประเภทเนื้อหา</label>
+            <p-dropdown [options]="chapter_data_type" [(ngModel)]="view_chapter_data.content_type" appendTo="body"
+                placeholder="เลือกประเภทเนื้อหา" optionLabel="label" optionValue="value"
+                styleClass="w-full"></p-dropdown>
+        </div>
+        <div class="col-12 md:col-9">
+            <label>ชื่อเนื้อหา</label>
+            <input type="text" pInputText [(ngModel)]="view_chapter_data.content_name" name="input_create_chapter_name"
+                #input_create_chapter_name="ngModel" placeholder="ชื่อเนื้อหา..." class="p-inputtext-sm" />
+        </div>
+        <div class="col-12 md:col-12" *ngIf="view_chapter_data.content_type != null">
+            <label>{{ view_chapter_data.content_type == 1 ? 'ที่อยู่ VDO จาก Youtube' : 'เนื้อหา'}}</label>
+            <input type="text" pInputText [(ngModel)]="view_chapter_data.content_data"
+                placeholder="https://youtu.be/...." *ngIf="view_chapter_data.content_type == 1"
+                name="input_view_chapter_data" #input_view_chapter_data="ngModel" class="p-inputtext-sm" />
+            <p-editor [(ngModel)]="view_chapter_data.content_data" [style]="{ height: '450px'}"
+                *ngIf="view_chapter_data.content_type == 2">
+                <ng-template pTemplate="header">
+                    <span class="ql-formats">
+                        <select class="ql-size"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-bold"></button>
+                        <button class="ql-italic"></button>
+                        <button class="ql-underline"></button>
+                        <button class="ql-strike"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <select class="ql-color"></select>
+                        <select class="ql-background"></select>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-script" value="sub"></button>
+                        <button class="ql-script" value="super"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-blockquote"></button>
+                        <button class="ql-code-block"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-list" value="ordered"></button>
+                        <button class="ql-list" value="bullet"></button>
+                        <button class="ql-indent" value="-1"></button>
+                        <button class="ql-indent" value="+1"></button>
+                    </span>
+                    <span class="ql-formats">
+                        <button class="ql-direction" value="rtl"></button>
+                        <select class="ql-align"></select>
+                    </span>
+                </ng-template>
+            </p-editor>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="แก้ไข" styleClass="p-button-warning p-button-sm m-1" (onClick)="onEditContent()"
+                    *ngIf="!view_chapter_data.edit" icon="pi pi-pencil"></p-button>
+                <p-button label="บันทึก" styleClass="p-button-success p-button-sm m-1" (onClick)="onUpdateContent()"
+                    *ngIf="view_chapter_data.edit" icon="pi pi-save"></p-button>
+
+                <p-button label="ลบ" styleClass="p-button-danger p-button-sm m-1 mr-4" (onClick)="onDeleteContent()"
+                    *ngIf="!view_chapter_data.edit" icon="pi pi-times"></p-button>
+
+                <p-button label="ปิด" icon="pi pi-times" styleClass="p-button-sm p-button-secondary m-1"
+                    (onClick)=" view_chapter_dialog=false"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="สร้างแบบทดสอบใหม่" [(visible)]="create_exam_dialog" [modal]="true"
+    [style]="{ width: '50vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12 md:col-3">
+            <label>บทเรียน</label>
+            <p-dropdown [options]="exam_lesson_array" [(ngModel)]="create_exam_data.lesson_id" appendTo="body"
+                placeholder="เลือกบทเรียน" optionLabel="lesson_name" optionValue="lesson_id"
+                styleClass="w-full"></p-dropdown>
+        </div>
+        <div class="col-12 md:col-9">
+            <label>ชื่อแบบทดสอบ</label>
+            <input type="text" pInputText [(ngModel)]="create_exam_data.exam_name" name="input_create_exam_data_name"
+                #input_create_exam_data_name="ngModel" placeholder="ชื่อแบบทดสอบ..." class="p-inputtext-sm" />
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ปิด" icon="pi pi-times" styleClass="p-button-sm p-button-secondary mt-4"
+                    (onClick)="create_exam_dialog = false"></p-button>
+                <p-button label="สร้างแบบทดสอบใหม่" [icon]="isApiSaving ? 'pi-spin pi-spinner' : 'pi pi-plus'"
+                    styleClass="p-button-sm p-button-success mt-4" [disabled]="isApiSaving"
+                    (onClick)="onSubmitCreateExam()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="แก้ไขชื่อแบบทดสอบ" [(visible)]="edit_exam_dialog" [modal]="true"
+    [style]="{ width: '50vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12">
+            <label>ชื่อแบบทดสอบ</label>
+            <input type="text" pInputText [(ngModel)]="edit_exam_data.exam_name" name="input_edit_exam_data_name"
+                #input_edit_exam_data_name="ngModel" placeholder="ชื่อแบบทดสอบ..." class="p-inputtext-sm" />
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ปิด" icon="pi pi-times" styleClass="p-button-sm p-button-secondary mt-4"
+                    (onClick)="edit_exam_dialog = false"></p-button>
+                <p-button label="แก้ไขชื่อแบบทดสอบ" [icon]="isApiSaving ? 'pi-spin pi-spinner' : 'pi pi-save'"
+                    styleClass="p-button-sm p-button-warning mt-4" [disabled]="isApiSaving"
+                    (onClick)="onSubmitEditExam()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>
+
+<p-dialog header="การทำแบบทดสอบ" [(visible)]="view_reg_exam_score_dialog" [modal]="true"
+    [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid" *ngIf="!view_reg_exam_score_dialog_isLoad">
+        <div class="col-12">
+            <b>ชื่อ:</b> {{ view_reg_exam_score_data.reg_name }}
+        </div>
+
+        <div class="col-12">
+            <div class="grid">
+                <div class="col-12" *ngFor="let lesson of view_reg_exam_score_data.exam_lesson;let i = index">
+                    <h3>บทเรียน: {{ lesson.lesson_name }}</h3>
+
+                    <div class="grid">
+                        <div class="col-12 md:col-3" *ngFor="let exam of lesson.course_exam">
+                            <p-card styleClass="p-card-custom view-exam-card-custom h-full">
+                                <div class="flex justify-content-between align-content-center flex-wrap">
+                                    <div style="max-width: 80%;">
+                                        <b>{{ exam.exam_name }}</b><br>
+                                        จำนวนโจทย์: {{ exam.total_problems }} ข้อ<br>
+                                        <b *ngIf="!exam.is_do" style="color: red;">ยังไม่ทำแบบทำสอบ</b>
+                                        <b [style.color]="calculateColor(exam.sum_Score,exam.total_problems)"
+                                            *ngIf="exam.is_do">
+                                            ได้: {{ exam.sum_Score }}/{{ exam.total_problems }} คะแนน
+                                        </b>
+                                    </div>
+                                </div>
+                            </p-card>
+                        </div>
+                    </div>
+
+                    <p-divider *ngIf="i < view_reg_exam_score_data.exam_lesson.length - 1"></p-divider>
+                </div>
+            </div>
+
+            <label *ngIf="view_reg_exam_score_data.exam_lesson.length == 0">คอร์สนี้ยังไม่มีบทเรียน</label>
+        </div>
+    </div>
+
+    <div class="grid" *ngIf="view_reg_exam_score_dialog_isLoad">
+        <div class="col-12" align="center">
+            <p-progressSpinner styleClass="p-progress-info" strokeWidth="8" fill="#ffffff" animationDuration=".5s"
+                [style]="{ 'width': '50px', 'height': '50px' }"></p-progressSpinner>
+        </div>
+        <div class="col-12" align="center">
+            กำลังโหลดข้อมูล...
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ปิด" icon="pi pi-times" styleClass="p-button-sm p-button-secondary mt-4"
+                    (onClick)="view_reg_exam_score_dialog = false;"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>

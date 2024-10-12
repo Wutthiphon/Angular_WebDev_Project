@@ -1,0 +1,76 @@
+<div class="grid flex align-content-center flex-wrap" style="justify-content: center;min-height: calc(100vh - 200px);">
+  <div class="col-12 md:col-10">
+    <p-card [style]="{'border-radius': '0px'}" styleClass="p-card-custom2">
+      <div class="grid">
+        <div class="col-12 md:col-6 hide-mobile" style="padding: 0px 0.5rem;">
+          <img src="https://ofy.org/wp-content/uploads/2015/11/OFY-learning-to-learn-cover-photo.jpg" height="100%"
+            width="100%">
+        </div>
+        <div class="col-12 md:col-6">
+          <form class="grid" style="padding: 10px 10px 10px 10px;" (ngSubmit)="registerSubmit()" #f="ngForm" name="f">
+            <div class="col-12">
+              <h2>
+                <i class="pi pi-pencil mr-2" style="font-size: 20pt;"></i> สมัครสมาชิก<br>
+                <label style="font-size: 10pt;">Register</label>
+              </h2>
+            </div>
+            <div class="col-12 md:col-3">
+              <label>คำนำหน้า</label>
+              <p-dropdown [options]="prefix_arr" [(ngModel)]="register_form.prefix" placeholder="คำนำหน้า"
+                name="input_prefix" #input_prefix="ngModel" [editable]="true" optionLabel="label"
+                optionValue="label"></p-dropdown>
+            </div>
+            <div class="col-12 md:col-5">
+              <label>ชื่อ</label>
+              <input type="text" pInputText [(ngModel)]="register_form.firstname" name="input_firstname"
+                #input_firstname="ngModel" placeholder="ชื่อ..." class="p-inputtext-sm" />
+            </div>
+            <div class="col-12 md:col-4">
+              <label>นามสกุล</label>
+              <input type="text" pInputText [(ngModel)]="register_form.lastname" name="input_lastname"
+                #input_lastname="ngModel" placeholder="นามสกุล..." class="p-inputtext-sm" />
+            </div>
+            <div class="col-12 md:col-3">
+              <label>เพศ</label>
+              <p-dropdown [options]="gender_arr" [(ngModel)]="register_form.gender" name="input_gender"
+                #input_gender="ngModel" placeholder="เลือกเพศ" class="p-inputtext-sm"></p-dropdown>
+            </div>
+            <div class="col-12 md:col-9">
+              <label>E-mail</label>
+              <input type="email" pInputText [(ngModel)]="register_form.email" name="input_email" #input_email="ngModel"
+                placeholder="E-mail..." class="p-inputtext-sm" />
+            </div>
+            <div class="col-12">
+              <label>ชื่อผู้ใช้งาน สำหรับใช้เข้าสู่ระบบ <label
+                  style="color: brown;">(ภาษาอังกฤษและตัวเลขเท่านั้น)</label></label>
+              <input type="text" pInputText [(ngModel)]="register_form.username" name="input_username"
+                #input_username="ngModel" placeholder="Username..." class="p-inputtext-sm" />
+            </div>
+            <div class="col-12 md:col-6">
+              <label>รหัสผ่าน</label>
+              <p-password [(ngModel)]="register_form.password" name="input_password" #input_password="ngModel"
+                placeholder="รหัสผ่าน" styleClass="w-full p-inputtext-sm" [feedback]="false"
+                [toggleMask]="true"></p-password>
+            </div>
+            <div class="col-12 md:col-6">
+              <label>ยืนยันรหัสผ่าน</label>
+              <p-password [(ngModel)]="register_form.password_confirm" name="input_password_confirm"
+                placeholder="ยืนยันรหัสผ่าน (ป้อนรหัสผ่านอีกครั้ง)" styleClass="w-full p-inputtext-sm"
+                #input_password_confirm="ngModel" [feedback]="false" [toggleMask]="true"></p-password>
+            </div>
+            <div class="col-12 md:col-12">
+              ประเภทบัญชี
+              <p-selectButton [options]="permission_arr" [(ngModel)]="register_form.permission_id" optionLabel="label"
+                name="input_permission_id" #input_permission_id="ngModel" optionValue="value"></p-selectButton>
+            </div>
+
+            <div class="col-12" align="right">
+              <p-button label="สมัครสมาชิก" styleClass="p-button-rounded p-button-danger p-button-sm" [icon]=" is_load
+                ? 'pi pi-spin pi-spinner' : 'pi pi-user-plus'" type=" submit"></p-button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

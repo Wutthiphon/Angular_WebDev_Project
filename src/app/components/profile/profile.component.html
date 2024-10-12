@@ -1,0 +1,111 @@
+<div class="grid">
+    <div class="col-12 md:col-4" align="center">
+        <p-card header="รูปโปรไฟล์" subheader="Profile Image">
+            <img [src]="profile_image ? env.apiURL + '/profile/img/' + profile_image : 'assets/profile/user-286.png'"
+                alt="Profile Image" style="width: 100%; height: auto;" class="profile-image">
+            <p-footer>
+                <button pButton type="button" label="เปลี่ยนรูปโปรไฟล์" icon="pi pi-pencil"
+                    (click)="CoverImageSelect.click()"
+                    class="p-button-outlined p-button-secondary p-button-sm p-button-rounded"></button>
+                <input #CoverImageSelect hidden="true" type="file" accept=".heic,.jpeg,.jpg,.png,.gif"
+                    (change)="selectProfileImage($event)" />
+            </p-footer>
+        </p-card>
+    </div>
+    <div class="col-12 md:col-8">
+        <div class="grid">
+            <div class="col-12">
+                <p-card header="ข้อมูลส่วนตัว" subheader="Personal Information">
+                    <div class="grid">
+                        <div class="col-12 md:col-3">
+                            <label>Username</label>
+                            <input type="text" pInputText [(ngModel)]="profile_form.username" placeholder="username..."
+                                #input_username="ngModel" [disabled]="true" />
+                        </div>
+                        <div class="col-12 md:col-3">
+                            <label>คำนำหน้า</label>
+                            <input type="text" pInputText [(ngModel)]="profile_form.prefix" placeholder="คำนำหน้า..."
+                                #input_prefix="ngModel" />
+                        </div>
+                        <div class="col-12 md:col-3">
+                            <label>ชื่อ</label>
+                            <input type="text" pInputText [(ngModel)]="profile_form.firstname" placeholder="ชื่อ..."
+                                #input_firstname="ngModel" />
+                        </div>
+                        <div class="col-12 md:col-3">
+                            <label>นามสกุล</label>
+                            <input type="text" pInputText [(ngModel)]="profile_form.lastname" placeholder="นามสกุล..."
+                                #input_lastname="ngModel" />
+                        </div>
+                        <div class="col-12 md:col-6">
+                            <label>E-mail</label>
+                            <input type="text" pInputText [(ngModel)]="profile_form.email" placeholder="email..."
+                                [disabled]="google_id" #input_email="ngModel" />
+                        </div>
+                        <div class="col-12 md:col-3">
+                            <label>เพศ</label>
+                            <p-dropdown [options]="gender_arr" [(ngModel)]="profile_form.gender" #input_gender="ngModel"
+                                placeholder="เลือกเพศ" class="p-inputtext-sm"></p-dropdown>
+                        </div>
+                    </div>
+
+                    <ng-template pTemplate="footer">
+                        <div align="right">
+                            <button pButton type="button" label="บันทึก" class="p-button-sm p-button-success"
+                                (click)="updateProfile()" [icon]="isApiSaving ? 'pi pi-spin pi-spinner' : 'pi pi-save'"
+                                [disabled]="!profile_form.username || !profile_form.prefix || !profile_form.firstname || !profile_form.lastname || !profile_form.email"></button>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+            <div class=" col-12">
+                <p-card header="เชื่อมต่อบัญชี Google" subheader="Sync Google Account">
+                    <div class="grid">
+                        <div class="col-12">
+                            <asl-google-signin-button type='standard' size='medium' shape="pill" *ngIf="!google_id"
+                                text="continue_with"></asl-google-signin-button>
+
+                            <div *ngIf="google_id">
+                                <b>E-mail: </b> {{ profile_form.email }}<br>
+                                <button pButton type="button" label="ยกเลิกการเชื่อมต่อบัญชี Google" icon="pi pi-times"
+                                    (click)="unSyncGoogleAccount()"
+                                    class="p-button-secondary p-button-sm mt-2"></button>
+                            </div>
+                        </div>
+                    </div>
+                </p-card>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog header="ปรับแต่งรูปภาพ" [(visible)]="imageCropDialog" [modal]="true"
+    [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+    <div class="grid">
+        <div class="col-12 md:col-3">
+            <p-card header="ตัวอย่าง">
+                <img [src]="imageCropData_croppedImage" style="width: 100%" />
+            </p-card>
+        </div>
+        <div class="col-12 md:col-9">
+            <p-card header="ตัวปรับแต่ง">
+                <image-cropper [imageChangedEvent]="imageCropData_imageChangedEvent" [maintainAspectRatio]="true"
+                    [resizeToWidth]="512" [resizeToHeight]="512" [aspectRatio]="1 / 1"
+                    (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+                    (loadImageFailed)="loadImageFailed()" style="width: 100%;height: 400px;">
+                </image-cropper>
+            </p-card>
+        </div>
+    </div>
+
+    <ng-template pTemplate="footer">
+        <div class="grid">
+            <div class="col-12" align="right">
+                <p-button label="ยกเลิก" icon="pi pi-times" styleClass="p-button-sm p-button-danger mt-4"
+                    (onClick)="imageCropDialog = false"></p-button>
+                <p-button label="บันทึก" icon="pi pi-save" styleClass="p-button-sm p-button-success mt-4"
+                    (onClick)="uploadProfileImage()"></p-button>
+            </div>
+        </div>
+    </ng-template>
+</p-dialog>

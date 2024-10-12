@@ -1,0 +1,139 @@
+<div class="main-container">
+  <div class="aside-container" [ngClass]="{'open': sidebarVisible}"
+    [style]="{'box-shadow': 'rgba(0, 0, 0, 0.24) 0px 1px 4px'}">
+    <div class="aside-content">
+      <div class="header">
+        <div class="col-12" style="text-align: right;">
+          <p-button icon="pi pi-times" styleClass="p-button-text p-button-rounded p-button-sm close-button"
+            id="hideAside" (click)="toggleAside()" [style]="{color: '#363636'}"></p-button>
+        </div>
+
+        <div class="col-12" align="center">
+          <img src="./assets/icon/logo.PNG" style="width: 60%;">
+        </div>
+
+        <div class="col-12">
+          <p-panelMenu [multiple]="true" [model]="aside_items" [style]="{width: '100%',border: 'none'}"
+            styleClass="panelMenu-custom">
+          </p-panelMenu>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p-menubar styleClass="navbar">
+    <ng-template pTemplate="start">
+      <div class="hide-mobile flex align-content-center flex-wrap">
+        <p-button icon="pi pi-bars" styleClass="p-button-text p-button-sm hamburger-button" id="hideAside"
+          [style]="{color: '#FFFFFF'}" (click)="toggleAside()"></p-button>
+
+        <img src="./assets/icon/logo.PNG" style="width: 50px;">
+        <!-- <i class="pi pi-box" style="font-size: 2rem;"></i> -->
+
+        <p-button styleClass="p-button-sm p-button-text text-white p-button-secondary hide-mobile"
+          label="คอร์สเรียนทั้งหมด" icon="pi pi-home" routerLink="/">
+        </p-button>
+
+        <!-- Login -->
+        <p-button styleClass="p-button-sm p-button-text text-white p-button-secondary hide-mobile" label="คอร์สของฉัน"
+          *ngIf="isLogin && (permission_id == 1 || permission_id == 2)" icon="pi pi-list" routerLink="/my-courses">
+        </p-button>
+
+        <p-button styleClass="p-button-sm p-button-text text-white p-button-secondary hide-mobile" label="แจ้งชำระเงิน"
+          *ngIf="isLogin && permission_id == 1" icon="pi pi-money-bill" routerLink="/payment">
+        </p-button>
+
+        <p-button styleClass="p-button-sm p-button-text text-white p-button-secondary hide-mobile"
+          label="จัดการผู้ใช้งานในระบบ" *ngIf="isLogin && permission_id == 3" icon="pi pi-users"
+          routerLink="/admin/accounts">
+        </p-button>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="end">
+      <div class="flex align-content-center flex-wrap" style="min-height: 200px">
+        <div class="flex align-items-center justify-content-center">
+          <!-- Un Login -->
+          <p-button styleClass="p-button-sm p-button-text text-white p-button-secondary hide-mobile" label="เข้าสู่ระบบ"
+            *ngIf="!isLogin" icon="pi pi-sign-in" routerLink="/login">
+          </p-button>
+          <p-button styleClass="p-button-sm p-button-text text-white p-button-secondary hide-mobile" label="สมัครสมาชิก"
+            *ngIf="!isLogin" routerLink="/register" icon="pi pi-sign-in">
+          </p-button>
+
+          <!-- Login -->
+          <p-menu #profile_menu [model]="profile_menu_item" [popup]="true" appendTo="body"></p-menu>
+          <p-button [outlined]="true" (click)="profile_menu.toggle($event)" *ngIf="isLogin"
+            styleClass="p-button-sm p-button-text text-white p-button-secondary hide-mobile">
+            <div class="flex align-content-center flex-wrap">
+              <div class="flex align-items-center">
+                <i class="pi pi-user mr-2" style="font-size: 1.5rem;" *ngIf="!profile_image"></i>
+                <img *ngIf="profile_image" alt="logo" [src]="env.apiURL + '/profile/img/' + profile_image"
+                  style="width: 2.5rem" class="profile-image mr-2" />
+                <b>{{ web_name }}</b>
+              </div>
+            </div>
+          </p-button>
+        </div>
+      </div>
+    </ng-template>
+  </p-menubar>
+</div>
+
+<div class="page-content-container">
+  <router-outlet></router-outlet>
+  <div class="grid mt-5" style="font-size: 10pt;">
+    <div class="col-12" align="center" style="color: #a0a0a0;">
+      <b>Copyright &copy; 2024 </b> |
+      <label>E-Learning</label>
+    </div>
+  </div>
+</div>
+
+<p-toast></p-toast>
+
+<p-confirmDialog [style]="{width: '600px'}" #confirmDialog>
+  <ng-template pTemplate="footer">
+    <div class="ui-dialog-buttonpane p-clearfix">
+      <button type="button" pButton icon="pi pi-times" label="ยกเลิก" (click)="confirmDialog.reject()"
+        class="p-button-danger p-button-rounded" style="margin-right: .25em"></button>
+      <button type="button" pButton icon="pi pi-check" label="ใช่" (click)="confirmDialog.accept()"
+        class="p-button-success p-button-rounded" style="margin-right: .25em"></button>
+    </div>
+  </ng-template>
+</p-confirmDialog>
+
+<p-dialog header="เปลี่ยนรหัสผ่าน" [(visible)]="change_password_dialog" [modal]="true"
+  [style]="{ width: '35vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
+  <div class="grid">
+    <div class="col-12">
+      <label>รหัสผ่านเดิม</label>
+      <p-password [feedback]="false" [toggleMask]="true" placeholder="รหัสผ่านเดิม" [toggleMask]="true"
+        styleClass="w-full" [(ngModel)]="change_password_dialog_data.old_password"
+        #input_old_password="ngModel"></p-password>
+    </div>
+    <div class="col-12">
+      <p-divider></p-divider>
+    </div>
+    <div class="col-12">
+      <label>รหัสผ่านใหม่</label>
+      <p-password [feedback]="false" [toggleMask]="true" placeholder="รหัสผ่านใหม่" [toggleMask]="true"
+        styleClass="w-full" [(ngModel)]="change_password_dialog_data.new_password"
+        #input_new_password="ngModel"></p-password>
+    </div>
+    <div class="col-12">
+      <label>ยืนยันรหัสผ่านใหม่</label>
+      <p-password [feedback]="false" [toggleMask]="true" placeholder="ยืนยันรหัสผ่านใหม่" [toggleMask]="true"
+        styleClass="w-full" [(ngModel)]="change_password_dialog_data.re_password"
+        #input_re_password="ngModel"></p-password>
+    </div>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="ui-dialog-buttonpane p-clearfix">
+      <button type="button" pButton icon="pi pi-times" label="ยกเลิก" (click)="change_password_dialog = false"
+        class="p-button-danger p-button-rounded" style="margin-right: .25em"></button>
+      <button type="button" pButton icon="pi pi-check" label="เปลี่ยนรหัสผ่าน" (click)="onSubmitChangePassword()"
+        class="p-button-success p-button-rounded"></button>
+    </div>
+  </ng-template>
+</p-dialog>
