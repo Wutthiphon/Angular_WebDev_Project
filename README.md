@@ -1,9 +1,7 @@
 
-# KMUTNB | Software Engineering Project (Frontend)
+# KMUTNB | Web Development Project (Frontend)
 
-โปรเจควิชา Software Engineering หัวข้อ ระบบซื้อคอร์สเรียนออนไลน์ พัฒนาโดยใช้ Frontend เป็น Angular 17 และ Backend เป็น NodeJS (express,prisma)
-
-
+โปรเจควิชา Web Development ระบบซื้อคอร์สเรียนออนไลน์ พัฒนาโดยใช้ Frontend เป็น Angular 17 และ Backend เป็น NodeJS (express,prisma)
 
 
 ## Installation
