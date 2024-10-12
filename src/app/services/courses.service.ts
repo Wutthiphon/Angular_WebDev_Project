@@ -13,7 +13,7 @@ const httpOptions = {
   providedIn: "root",
 })
 export class CoursesService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   update_course_image(image: File): Observable<any> {
     const formData: FormData = new FormData();
@@ -43,7 +43,6 @@ export class CoursesService {
     course_have_price: boolean,
     cover_image: string | null,
     course_price: number | null,
-    payment_image: string
   ): Observable<any> {
     return this.http.post(
       API + "createCourse",
@@ -53,7 +52,6 @@ export class CoursesService {
         course_visibility: course_have_price,
         image: cover_image,
         cost: course_price,
-        image_account: payment_image,
       },
       httpOptions
     );
@@ -66,7 +64,6 @@ export class CoursesService {
     course_have_price: boolean,
     cover_image: string | null,
     course_price: number | null,
-    payment_image: string
   ): Observable<any> {
     return this.http.post(
       API + "updateCourse",
@@ -77,7 +74,6 @@ export class CoursesService {
         course_visibility: course_have_price,
         image: cover_image,
         cost: course_price,
-        image_account: payment_image,
       },
       httpOptions
     );

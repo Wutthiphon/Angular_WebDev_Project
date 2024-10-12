@@ -33,7 +33,6 @@ export class CourseComponent {
     course_description: "",
     course_have_price: false,
     cover_image: "./assets/cover/null-cover.png",
-    payment_image: "./assets/cover/null-money-cover.png",
     course_price: null,
     register_user: [],
   };
@@ -155,7 +154,6 @@ export class CourseComponent {
           course_have_price: res.course_visibility,
           course_price: res.cost,
           cover_image: res.image,
-          payment_image: res.img_account,
           register_user: res.course_reg,
         };
         this.isLoad = false;
@@ -236,8 +234,6 @@ export class CourseComponent {
           });
           if (this.imageCropData_type == "edit") {
             this.select_course_info.cover_image = api_res.image;
-          } else if (this.imageCropData_type == "payment_edit") {
-            this.select_course_info.payment_image = api_res.image;
           }
         }
       });
@@ -257,7 +253,6 @@ export class CourseComponent {
           course_have_price,
           cover_image,
           course_price,
-          payment_image,
         } = this.select_course_info;
         this.coursesService
           .updateCourse(
@@ -267,7 +262,6 @@ export class CourseComponent {
             course_have_price,
             cover_image == "./assets/cover/null-cover.png" ? null : cover_image,
             course_price,
-            payment_image
           )
           .subscribe(
             (api_res) => {
@@ -1066,7 +1060,7 @@ export class CourseComponent {
               detail: "อนุมัติการเรียนจบสำเร็จ",
             });
             this.loadCourses();
-          },(err)=> {
+          }, (err) => {
             Swal.fire({
               icon: "error",
               title: "เกิดข้อผิดพลาด",

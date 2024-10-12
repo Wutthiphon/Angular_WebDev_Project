@@ -54,19 +54,6 @@
                                         accept=".heic,.jpeg,.jpg,.png,.gif"
                                         (change)="selectCoverImage($event,'edit')" />
                                 </div>
-                                <div class="col-12">
-                                    <b>รูปภาพวิธีการชำระเงิน</b><br>
-                                    <img onerror="this.src='./assets/cover/null-money-cover.png'"
-                                        [src]="select_course_info.payment_image != null ? api_url + '/public/' + select_course_info.payment_image : './assets/cover/null-money-cover.png'"
-                                        alt="Cover Image" style="width: 100%; height: auto;max-width: 360px;">
-                                    <br>
-                                    <button pButton type="button" label="เปลี่ยนรูปภาพวิธีการชำระเงิน"
-                                        icon="pi pi-pencil" (click)="PaymentImageEditSelect.click()"
-                                        class="p-button-outlined p-button-sm p-button-rounded"></button>
-                                    <input #PaymentImageEditSelect hidden="true" type="file"
-                                        accept=".heic,.jpeg,.jpg,.png,.gif"
-                                        (change)="selectCoverImage($event,'payment_edit')" />
-                                </div>
                             </div>
                         </div>
                     </div>

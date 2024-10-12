@@ -1,7 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap");
 
 $custom-font: "Kanit", sans-serif;
-$global-color:  linear-gradient(121deg, rgba(62,62,62,1) 0%, rgba(244,154,71,1) 100%);
+$global-color: linear-gradient(
+  121deg,
+  rgba(62, 62, 62, 1) 0%,
+  rgba(244, 154, 71, 1) 100%
+);
+$global-static-color: #f28705;
 $global-secondary-color: #c5c5c5;
 $background-color: #f5f5f5;
 
@@ -97,7 +102,7 @@ p-inputnumber {
 }
 
 .select-menu.active {
-  background: $global-color;
+  background-color: $global-static-color !important;
 
   .p-menuitem-text {
     color: #ffffff !important;
@@ -113,7 +118,7 @@ p-inputnumber {
 
 .select-menu.active :hover {
   border-radius: 8px;
-  background: $global-color !important;
+  background-color: $global-static-color !important;
 }
 
 .p-menu .p-submenu-header {
@@ -324,7 +329,7 @@ footer {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: $global-color;
+  background-color: $global-static-color;
   border-radius: 10px;
 }
 
@@ -350,10 +355,10 @@ footer {
 }
 
 .p-tabmenu .p-tabmenu-nav .p-tabmenuitem.p-highlight .p-menuitem-link {
-  background: $global-color !important;
+  background-color: $global-static-color;
   color: rgb(255, 255, 255) !important;
   border-radius: 0px;
-  border-color: $global-color;
+  border-color: $global-static-color;
 }
 
 .p-tabmenu .p-tabmenu-nav .p-tabmenuitem .p-menuitem-link {

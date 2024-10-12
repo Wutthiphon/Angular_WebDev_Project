@@ -81,6 +81,9 @@ import { EditorModule } from "primeng/editor";
 // Other
 import { ImageCropperModule } from "ngx-image-cropper";
 
+// Stripe
+import { NgxStripeModule } from 'ngx-stripe';
+
 // Soical Login
 import {
   SocialLoginModule,
@@ -98,7 +101,6 @@ import { LoginComponent } from "./components/login/login.component";
 import { RegisterComponent } from "./components/register/register.component";
 import { Component404 } from "./errors/404/404.component";
 import { MyCoursesComponent } from "./components/my-courses/my-courses.component";
-import { PaymentComponent } from "./components/payment/payment.component";
 import { ProfileComponent } from "./components/profile/profile.component";
 import { CourseComponent } from "./components/tutor/course/course.component";
 
@@ -110,7 +112,6 @@ import { CourseComponent } from "./components/tutor/course/course.component";
     RegisterComponent,
     Component404,
     MyCoursesComponent,
-    PaymentComponent,
     ProfileComponent,
     CourseComponent,
     // Pipe
@@ -189,6 +190,8 @@ import { CourseComponent } from "./components/tutor/course/course.component";
     GoogleSigninButtonModule,
     // Other
     ImageCropperModule,
+    // Stripe
+    NgxStripeModule.forRoot('pk_test_51Q8ubq03aiNqpbdkOInDx4BGLNvFUmDMjKqvnKtIzEbP1tNZZLuGIawwOcRxGsTDsup5Htc0KvnXR4jWcyhH1QAQ00K0FWZapS'),
   ],
   providers: [
     authInterceptorProviders,

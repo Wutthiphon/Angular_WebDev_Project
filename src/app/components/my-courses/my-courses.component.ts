@@ -189,17 +189,7 @@ export class MyCoursesComponent {
       course_have_price,
       cover_image,
       course_price,
-      payment_image,
     } = this.create_course_dialog_data;
-
-    if (payment_image == "./assets/cover/null-cover.png") {
-      this.messageService.add({
-        severity: "error",
-        summary: "เกิดข้อผิดพลาด",
-        detail: "กรุณาเลือกรูปภาพวิธีการชำระเงิน",
-      });
-      return;
-    }
 
     this.confirmationService.confirm({
       icon: "pi pi-exclamation-triangle",
@@ -213,7 +203,6 @@ export class MyCoursesComponent {
             course_have_price,
             cover_image == "./assets/cover/null-cover.png" ? null : cover_image,
             course_price,
-            payment_image
           )
           .subscribe(
             (api_res) => {
@@ -496,9 +485,9 @@ export class MyCoursesComponent {
 
     firstPage.drawText(
       this.select_course.users_account.prefix +
-        this.select_course.users_account.first_name +
-        " " +
-        this.select_course.users_account.last_name,
+      this.select_course.users_account.first_name +
+      " " +
+      this.select_course.users_account.last_name,
       {
         x: 510,
         y: 135,

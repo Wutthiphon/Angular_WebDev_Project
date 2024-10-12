@@ -324,7 +324,7 @@
 <p-dialog header="สร้างคอร์ส" [(visible)]="create_course_dialog" [modal]="true"
     [style]="{ width: '80vw','min-width':'360.5px' }" [draggable]="false" [resizable]="false">
     <div class="grid">
-        <div class="col-12 md:col-6" align="center">
+        <div class="col-12" align="center">
             <b>รูปภาพปก</b><br>
             <img [src]="create_course_dialog_data.cover_image != './assets/cover/null-cover.png' ? api_url + '/public/' + create_course_dialog_data.cover_image : './assets/cover/null-cover.png'"
                 alt="Cover Image" style="width: 100%; height: auto;max-width: 360px;">
@@ -333,16 +333,6 @@
                 class="p-button-outlined p-button-sm p-button-rounded"></button>
             <input #CoverImageSelect hidden="true" type="file" accept=".heic,.jpeg,.jpg,.png,.gif"
                 (change)="selectCoverImage($event,'create')" />
-        </div>
-        <div class="col-12 md:col-6" align="center" *ngIf="create_course_dialog_data.course_have_price">
-            <b>วิธีการชำระเงิน</b><br>
-            <img [src]="create_course_dialog_data.payment_image != './assets/cover/null-money-cover.png' ? api_url + '/public/' + create_course_dialog_data.payment_image : './assets/cover/null-money-cover.png'"
-                alt="Cover Image" style="width: 100%; height: auto;max-width: 360px;">
-            <br>
-            <button pButton type="button" label="เปลี่ยนวิธีการชำระเงิน" icon="pi pi-pencil"
-                (click)="PaymentImageSelect.click()" class="p-button-outlined p-button-sm p-button-rounded"></button>
-            <input #PaymentImageSelect hidden="true" type="file" accept=".heic,.jpeg,.jpg,.png,.gif"
-                (change)="selectCoverImage($event,'payment')" />
         </div>
         <div class="col-12 md:col-12">
             <label>ชื่อคอร์ส</label>
@@ -355,17 +345,17 @@
                 name="input_course_description" #input_course_description="ngModel" placeholder="รายละเอียดคอร์ส..."
                 [rows]="5" class="p-inputtext-sm"></textarea>
         </div>
-        <div class="col-12 md:col-12">
+        <div class="col-12 md:col-2">
             <label>รูปแบบคอร์ส</label><br>
             ฟรี &nbsp;
             <p-inputSwitch [(ngModel)]="create_course_dialog_data.course_have_price" name="input_course_have_price"
                 #input_course_have_price="ngModel"></p-inputSwitch> &nbsp;มีค่าเรียน
         </div>
-        <div class="col-12 md:col-4" *ngIf="create_course_dialog_data.course_have_price">
-            <label>ราคาคอร์ส</label>
+        <div class="col-12 md:col-3" *ngIf="create_course_dialog_data.course_have_price">
+            <label>ราคาคอร์ส (บาท)</label>
             <p-inputNumber type="number" [(ngModel)]="create_course_dialog_data.course_price" name="input_course_price"
-                styleClass="w-full" suffix=" บาท" #input_course_price="ngModel" placeholder="ราคาคอร์ส..."
-                class="p-inputtext-sm" />
+                mode="decimal" [maxFractionDigits]="2" styleClass="w-full" #input_course_price="ngModel"
+                placeholder="ราคาคอร์ส..." class="p-inputtext-sm" />
         </div>
     </div>
 

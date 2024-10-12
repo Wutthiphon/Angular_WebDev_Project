@@ -88,19 +88,19 @@ export class HomeComponent {
         this.coursesService.registerCourse(course.course_id).subscribe(
           (res) => {
             if (res.registration_status == 1) {
-              Swal.fire({
-                title: "คอร์สนี้เสียค่าใช้จ่าย",
-                text: "ลงทะเบียนสำเร็จ ต้องการไปหน้าชำระเงินหรือไม่",
-                icon: "question",
-                showCancelButton: true,
-                confirmButtonText: "ตกลง",
-                cancelButtonText: "ยกเลิก",
-                reverseButtons: true,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.router.navigateByUrl("/payment");
-                }
-              });
+              // Swal.fire({
+              //   title: "คอร์สนี้เสียค่าใช้จ่าย",
+              //   text: "ลงทะเบียนสำเร็จ ต้องการไปหน้าชำระเงินหรือไม่",
+              //   icon: "question",
+              //   showCancelButton: true,
+              //   confirmButtonText: "ตกลง",
+              //   cancelButtonText: "ยกเลิก",
+              //   reverseButtons: true,
+              // }).then((result) => {
+              //   if (result.isConfirmed) {
+              //     this.router.navigateByUrl("/payment");
+              //   }
+              // });
             } else if (res.registration_status == 2) {
               Swal.fire({
                 title: "ลงทะเบียนคอร์สเรียนสำเร็จ",

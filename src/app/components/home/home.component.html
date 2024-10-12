@@ -29,9 +29,11 @@
                             *ngIf="can_manage" [routerLink]="'/course/' + course.course_id"
                             icon="pi pi-sign-in"></p-button>
 
-                        <p-button label="เข้าร่วม" styleClass="p-button-success p-button-sm"
-                            *ngIf="can_register && !course.isRegister" (onClick)="onRegisterCourse(course)"
-                            icon="pi pi-sign-in"></p-button>
+                        <p-button [label]="!course.course_visibility ? 'เข้าร่วม' : 'ซื้อคอร์สเรียน'"
+                            *ngIf="can_register && !course.isRegister"
+                            [styleClass]="'p-button-sm' + (!course.course_visibility ? ' p-button-success' : ' p-button-warning')"
+                            (onClick)="onRegisterCourse(course)"
+                            [icon]="!course.course_visibility ? 'pi pi-sign-in' : 'pi pi-shopping-cart'"></p-button>
                     </div>
                 </div>
             </p-card>
@@ -71,17 +73,6 @@
                 </li>
             </ul>
             <label *ngIf="dialog_show_info_course_data.course_lesson.length == 0"><br>ยังไม่มีบทเรียน</label>
-        </div>
-
-        <div class="col-12" align="center">
-            <b>วิธีการชำระเงิน</b><br>
-            <img alt="Card" onerror="this.src='./assets/cover/null-money-cover.png'"
-                *ngIf="dialog_show_info_course_data.img_account" style="width: 100%;"
-                [src]="dialog_show_info_course_data.img_account ? api_url + '/public/' + dialog_show_info_course_data.img_account : './assets/cover/null-money-cover.png'" />
-            <label *ngIf="!dialog_show_info_course_data.img_account">
-                <br>
-                ไม่ระบุวิธีการชำระเงิน กรุณาแจ้งผู้ดูแลระบบ
-            </label>
         </div>
     </div>
 </p-dialog>
