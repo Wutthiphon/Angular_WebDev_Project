@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { MessageService, ConfirmationService } from "primeng/api";
+import { MessageService } from "primeng/api";
 import { AuthService } from "../../services/auth.service";
 import { TokenStorageService } from "../../services/token-storage.service";
 import Swal from "sweetalert2";
@@ -20,10 +20,10 @@ export class LoginComponent {
     password: string;
     remenber_me: boolean;
   } = {
-    username: "",
-    password: "",
-    remenber_me: false,
-  };
+      username: "",
+      password: "",
+      remenber_me: false,
+    };
 
   is_error: boolean = false;
   is_load: boolean = false;
@@ -36,7 +36,6 @@ export class LoginComponent {
 
   constructor(
     private messageService: MessageService,
-    private confirmationService: ConfirmationService,
     private tokenStorage: TokenStorageService,
     private authService: AuthService,
     private AuthServiceExternal: SocialAuthService,
@@ -60,7 +59,7 @@ export class LoginComponent {
               Swal.fire(
                 "ข้อผิดพลาด!",
                 error.error.message ||
-                  "เกิดข้อผิดพลาดในการเข้าสู่ระบบโปรดลองอีกครั้ง",
+                "เกิดข้อผิดพลาดในการเข้าสู่ระบบโปรดลองอีกครั้ง",
                 "error"
               );
             }
@@ -138,6 +137,7 @@ export class LoginComponent {
         summary: "ข้อผิดพลาด",
         detail: "กรุณากรอกข้อมูลให้ครบถ้วน",
       });
+      this.is_load = false;
     }
   }
 

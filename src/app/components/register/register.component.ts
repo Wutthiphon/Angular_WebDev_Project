@@ -128,6 +128,15 @@ export class RegisterComponent {
         return;
       }
 
+      if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(email)) {
+        this.messageService.add({
+          severity: "error",
+          summary: "Error",
+          detail: "รูปแบบอีเมลไม่ถูกต้อง",
+        });
+        return;
+      }
+
       this.confirmationService.confirm({
         icon: "pi pi-exclamation-triangle",
         header: "ยืนยันการสมัครสมาชิก ?",

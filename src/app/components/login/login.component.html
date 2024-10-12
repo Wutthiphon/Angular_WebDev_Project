@@ -1,51 +1,58 @@
 <div class="grid flex align-content-center flex-wrap" style="justify-content: center;min-height: calc(100vh - 200px);">
-  <div class="col-12 md:col-3" style="min-width: 365.5px;">
-    <p-card styleClass="p-card-custom">
-      <form class="grid" (ngSubmit)="loginSubmit()">
-        <div class="col-12">
-          <h2>
-            <i class="pi pi-sign-in mr-2" style="font-size: 20pt;"></i> เข้าสู่ระบบ<br>
-            <label style="font-size: 10pt;">Login</label>
-          </h2>
+  <div class="col-12 md:col-9">
+    <p-card [style]="{'border-radius': '0px'}" styleClass="p-card-custom2">
+      <div class="grid">
+        <div class="col-12 md:col-8 hide-mobile" style="padding: 0px 0.5rem;">
+          <img src="./assets/background/login.png" height="100%" width="100%">
         </div>
-        <div class="col-12">
-          <label>ชื่อผู้ใช้งาน</label>
-          <input type="text" pInputText [(ngModel)]="login_form.username" name="input_username"
-            [class.ng-invalid]="is_error" [class.ng-dirty]="is_error" #input_username="ngModel"
-            placeholder="Username..." class="p-inputtext-sm" />
-        </div>
-        <div class="col-12">
-          <label>รหัสผ่าน</label>
-          <p-password [(ngModel)]="login_form.password" name="input_password" #input_password="ngModel"
-            [class.ng-invalid]="is_error" [class.ng-dirty]="is_error" placeholder="รหัสผ่าน"
-            styleClass="w-full p-inputtext-sm" [feedback]="false" [toggleMask]="true"></p-password>
-        </div>
+        <div class="col-12 md:col-4">
+          <form class="grid" style="padding: 10px 10px 10px 10px;" (ngSubmit)="loginSubmit()">
+            <div class="col-12">
+              <h2>
+                <i class="pi pi-sign-in mr-2" style="font-size: 20pt;"></i> เข้าสู่ระบบ<br>
+                <label style="font-size: 10pt;">Login</label>
+              </h2>
+            </div>
+            <div class="col-12">
+              <label>ชื่อผู้ใช้งาน</label>
+              <input type="text" pInputText [(ngModel)]="login_form.username" name="input_username"
+                [class.ng-invalid]="is_error" [class.ng-dirty]="is_error" #input_username="ngModel"
+                placeholder="Username..." class="p-inputtext-sm" />
+            </div>
+            <div class="col-12">
+              <label>รหัสผ่าน</label>
+              <p-password [(ngModel)]="login_form.password" name="input_password" #input_password="ngModel"
+                [class.ng-invalid]="is_error" [class.ng-dirty]="is_error" placeholder="รหัสผ่าน"
+                styleClass="w-full p-inputtext-sm" [feedback]="false" [toggleMask]="true"></p-password>
+            </div>
 
-        <div class="col-12" *ngIf="is_error">
-          <b style="color: red;">ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง</b>
-        </div>
-        <div class="col-12 mt-3">
-          <p-checkbox [binary]="true" [(ngModel)]="login_form.remenber_me" name="input_remember"
-            label="จดจำข้อมูลเข้าสู่ระบบ" class="p-checkbox-sm"></p-checkbox>
-        </div>
-        <div class="col-12">
-          <b class="forgot-password" (click)="forgotPassword()">ลืมรหัสผ่าน ?</b>
-        </div>
-        <div class="col-12" align="center">
-          <p-button label="เข้าสู่ระบบ" styleClass="p-button-rounded p-button-success p-button-sm" type="submit"
-            [icon]="is_load ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'" [disabled]="is_load"></p-button>
-        </div>
+            <div class="col-12" *ngIf="is_error">
+              <b style="color: red;">ชื่อผู้ใช้งานหรือรหัสผ่านไม่ถูกต้อง</b>
+            </div>
+            <div class="col-12 mt-3">
+              <p-checkbox [binary]="true" [(ngModel)]="login_form.remenber_me" name="input_remember"
+                label="จดจำข้อมูลเข้าสู่ระบบ" class="p-checkbox-sm"></p-checkbox>
+            </div>
+            <div class="col-12">
+              <b class="forgot-password" (click)="forgotPassword()">ลืมรหัสผ่าน ?</b>
+            </div>
+            <div class="col-12" align="center">
+              <p-button label="เข้าสู่ระบบ" styleClass="p-button-rounded p-button-success p-button-sm" type="submit"
+                [icon]="is_load ? 'pi pi-spin pi-spinner' : 'pi pi-sign-in'" [disabled]="is_load"></p-button>
+            </div>
 
-        <div class="col-12" align="center">
-          <p-divider align="center">
-            หรือ
-          </p-divider>
-        </div>
+            <div class="col-12" align="center">
+              <p-divider align="center">
+                หรือ
+              </p-divider>
+            </div>
 
-        <div class="col-12" align="center">
-          <asl-google-signin-button type='standard' size='medium' shape="pill"></asl-google-signin-button>
+            <div class="col-12" align="center">
+              <asl-google-signin-button type='standard' size='medium' shape="pill"></asl-google-signin-button>
+            </div>
+          </form>
         </div>
-      </form>
+      </div>
     </p-card>
   </div>
 </div>

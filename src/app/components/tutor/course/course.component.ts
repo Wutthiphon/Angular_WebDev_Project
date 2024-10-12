@@ -541,6 +541,7 @@ export class CourseComponent {
         summary: "เกิดข้อผิดพลาด",
         detail: "กรุณากรอกข้อมูลให้ครบถ้วน",
       });
+      this.isApiSaving = false;
       return;
     }
 
@@ -745,6 +746,7 @@ export class CourseComponent {
               exam_name: "",
               lesson_id: null,
             };
+            this.select_exam_lesson_id = this.select_exam_lesson_id == null ? lesson_id : this.select_exam_lesson_id;
             this.loadLessonExam();
             this.isApiSaving = false;
           },
@@ -1064,6 +1066,12 @@ export class CourseComponent {
               detail: "อนุมัติการเรียนจบสำเร็จ",
             });
             this.loadCourses();
+          },(err)=> {
+            Swal.fire({
+              icon: "error",
+              title: "เกิดข้อผิดพลาด",
+              text: err.error.message,
+            });
           });
       },
     });

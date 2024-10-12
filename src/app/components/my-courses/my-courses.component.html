@@ -334,7 +334,7 @@
             <input #CoverImageSelect hidden="true" type="file" accept=".heic,.jpeg,.jpg,.png,.gif"
                 (change)="selectCoverImage($event,'create')" />
         </div>
-        <div class="col-12 md:col-6" align="center">
+        <div class="col-12 md:col-6" align="center" *ngIf="create_course_dialog_data.course_have_price">
             <b>วิธีการชำระเงิน</b><br>
             <img [src]="create_course_dialog_data.payment_image != './assets/cover/null-money-cover.png' ? api_url + '/public/' + create_course_dialog_data.payment_image : './assets/cover/null-money-cover.png'"
                 alt="Cover Image" style="width: 100%; height: auto;max-width: 360px;">
