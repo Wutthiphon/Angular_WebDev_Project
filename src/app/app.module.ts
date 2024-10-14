@@ -81,9 +81,6 @@ import { EditorModule } from "primeng/editor";
 // Other
 import { ImageCropperModule } from "ngx-image-cropper";
 
-// Stripe
-import { NgxStripeModule } from 'ngx-stripe';
-
 // Soical Login
 import {
   SocialLoginModule,
@@ -190,8 +187,6 @@ import { CourseComponent } from "./components/tutor/course/course.component";
     GoogleSigninButtonModule,
     // Other
     ImageCropperModule,
-    // Stripe
-    NgxStripeModule.forRoot('pk_test_51Q8ubq03aiNqpbdkOInDx4BGLNvFUmDMjKqvnKtIzEbP1tNZZLuGIawwOcRxGsTDsup5Htc0KvnXR4jWcyhH1QAQ00K0FWZapS'),
   ],
   providers: [
     authInterceptorProviders,

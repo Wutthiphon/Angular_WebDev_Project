@@ -8,7 +8,7 @@ RUN npm run build --prod
 
 FROM --platform=linux/amd64 nginx AS runner
 EXPOSE 80
-COPY --from=builder /app/dist/se_project/browser /usr/share/nginx/html
+COPY --from=builder /app/dist/web_dev_project/browser /usr/share/nginx/html
 RUN rm /etc/nginx/conf.d/default.conf
 COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 

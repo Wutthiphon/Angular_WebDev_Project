@@ -35,6 +35,7 @@ export class MyCoursesComponent {
     cover_image: "./assets/cover/null-cover.png",
     payment_image: "./assets/cover/null-money-cover.png",
     course_price: null,
+    continuity: <number | null>null,
   };
 
   page: string = "my-courses"; // my-courses in-course
@@ -113,6 +114,7 @@ export class MyCoursesComponent {
       cover_image: "./assets/cover/null-cover.png",
       payment_image: "./assets/cover/null-money-cover.png",
       course_price: null,
+      continuity: <number | null>null,
     };
   }
 
@@ -132,10 +134,6 @@ export class MyCoursesComponent {
       event.base64,
       this.imageCropData_imageChangedEvent.target.files[0].name
     );
-    {
-      {
-      }
-    }
   }
 
   imageLoaded() {
@@ -189,6 +187,7 @@ export class MyCoursesComponent {
       course_have_price,
       cover_image,
       course_price,
+      continuity,
     } = this.create_course_dialog_data;
 
     this.confirmationService.confirm({
@@ -203,6 +202,7 @@ export class MyCoursesComponent {
             course_have_price,
             cover_image == "./assets/cover/null-cover.png" ? null : cover_image,
             course_price,
+            continuity
           )
           .subscribe(
             (api_res) => {

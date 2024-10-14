@@ -22,6 +22,12 @@
                         <b *ngIf="course.course_visibility">ค่าสมัคร: {{ course.cost | number : '1.2-2' }} บาท</b>
                     </div>
 
+                    <div class="col-12" *ngIf="course.Continuity">
+                        <p style="color: red;"><b>คอร์สต่อของ</b><br>
+                            {{ getContinuityCourse(course.Continuity) }}
+                        </p>
+                    </div>
+
                     <div class="col-12" align="center">
                         <p-button label="รายละเอียด" styleClass="p-button-info p-button-sm mr-1" *ngIf="!can_manage"
                             (onClick)="onShowInfoCourseDialog(course)" icon="pi pi-info"></p-button>

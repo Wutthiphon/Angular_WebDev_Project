@@ -43,6 +43,7 @@ export class CoursesService {
     course_have_price: boolean,
     cover_image: string | null,
     course_price: number | null,
+    continuity: number | null
   ): Observable<any> {
     return this.http.post(
       API + "createCourse",
@@ -52,6 +53,7 @@ export class CoursesService {
         course_visibility: course_have_price,
         image: cover_image,
         cost: course_price,
+        Continuity: continuity
       },
       httpOptions
     );
@@ -87,10 +89,17 @@ export class CoursesService {
     );
   }
 
-  uploadSlipImage(image: string, registration_id: number): Observable<any> {
+  getCoursePrice(course: any): Observable<any> {
+    return this.http.post(API + "payment/check_price", { course: course }, httpOptions);
+  }
+
+  createCoursePayment(course: any, use_promotion: boolean): Observable<any> {
     return this.http.post(
-      API + "payment/submit_document",
-      { registration_id: registration_id, img_payment: image },
+      API + "payment/createPayment",
+      {
+        course: course,
+        use_promotion: use_promotion
+      },
       httpOptions
     );
   }

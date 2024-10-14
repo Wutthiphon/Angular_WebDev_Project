@@ -334,10 +334,17 @@
             <input #CoverImageSelect hidden="true" type="file" accept=".heic,.jpeg,.jpg,.png,.gif"
                 (change)="selectCoverImage($event,'create')" />
         </div>
-        <div class="col-12 md:col-12">
+        <div class="col-12 md:col-9">
             <label>ชื่อคอร์ส</label>
             <input type="text" pInputText [(ngModel)]="create_course_dialog_data.course_name" name="input_course_name"
                 #input_course_name="ngModel" placeholder="ชื่อคอร์ส..." class="p-inputtext-sm" />
+        </div>
+        <div class="col-12 md:col-3">
+            <label>คอร์สตัวต่อของ</label>
+            <p-dropdown [options]="courseList" [(ngModel)]="create_course_dialog_data.continuity" [filter]="true"
+                name="input_course_continuity" #input_course_continuity="ngModel" [showClear]="true" appendTo="body"
+                optionLabel="course_name" optionValue="course_id" placeholder="คอร์สตัวต่อของ..."
+                class="p-inputtext-sm"></p-dropdown>
         </div>
         <div class="col-12 md:col-12">
             <label>รายละเอียดคอร์ส</label>

@@ -5,7 +5,8 @@ import { environment } from "../../../environments/environment";
 import { MessageService } from "primeng/api";
 import { ConfirmationService } from "primeng/api";
 import Swal from "sweetalert2";
-import { Router } from "@angular/router";
+import { loadStripe } from '@stripe/stripe-js';
+import { ActivatedRoute, Router } from "@angular/router";
 
 @Component({
   selector: "app-home",
@@ -25,13 +26,36 @@ export class HomeComponent {
   dialog_show_info_course: boolean = false;
   dialog_show_info_course_data: any = {};
 
+  private stripePromise = loadStripe(environment.StripePublishableKey);
+
   constructor(
     private coursesService: CoursesService,
     private tokenStorage: TokenStorageService,
     private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
+    this.route.queryParams.subscribe((params) => {
+      if (params['payment'] == 'success') {
+        Swal.fire({
+          title: "ชำระเงินสำเร็จ",
+          icon: "success",
+          text: "ระบบจะพาคุณไปยังหน้าคอร์สเรียนของฉัน",
+        }).then(() => {
+          this.router.navigate(['/my-courses'])
+        })
+      } else if (params['payment'] == 'reject') {
+        Swal.fire({
+          title: "ยกเลิกการชำระเงิน",
+          icon: "warning",
+          text: "กรุณาลองใหม่อีกครั้ง",
+        }).then(() => {
+          this.router.navigate(['/'])
+        })
+      }
+    });
+
     if (this.tokenStorage.getToken()) {
       let permission = this.tokenStorage.getUser().permission;
       if (permission == 1) {
@@ -68,6 +92,11 @@ export class HomeComponent {
     }
   }
 
+  getContinuityCourse(con_course_id: number) {
+    let findCourse = this.courseList.find((f_course) => f_course.course_id == con_course_id);
+    return findCourse ? findCourse.course_name : 0;
+  }
+
   onShowInfoCourseDialog(course: any) {
     this.dialog_show_info_course = true;
     this.dialog_show_info_course_data = course;
@@ -85,40 +114,89 @@ export class HomeComponent {
           ? "<b class='text-danger'>(คอร์สเรียนนี้มีค่าใช้จ่าย)</b>"
           : ""),
       accept: () => {
-        this.coursesService.registerCourse(course.course_id).subscribe(
-          (res) => {
-            if (res.registration_status == 1) {
-              // Swal.fire({
-              //   title: "คอร์สนี้เสียค่าใช้จ่าย",
-              //   text: "ลงทะเบียนสำเร็จ ต้องการไปหน้าชำระเงินหรือไม่",
-              //   icon: "question",
-              //   showCancelButton: true,
-              //   confirmButtonText: "ตกลง",
-              //   cancelButtonText: "ยกเลิก",
-              //   reverseButtons: true,
-              // }).then((result) => {
-              //   if (result.isConfirmed) {
-              //     this.router.navigateByUrl("/payment");
-              //   }
-              // });
-            } else if (res.registration_status == 2) {
+        if (course.course_visibility == 1) {
+          Swal.fire({
+            title: 'กำลังตรวจสอบข้อมูล',
+            icon: 'info',
+            text: 'กรุณารอสักครู่...',
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            allowEnterKey: false,
+            showConfirmButton: false,
+          })
+
+          this.coursesService.getCoursePrice(course).subscribe(async (res) => {
+            let confirm_status = false
+            if (res.status) {
+              await Swal.fire({
+                title: 'คุณมีโปรโมชั่น ต้องการใช้หรือไม่ ?',
+                icon: 'question',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: `ใช้`,
+                denyButtonText: `ไม่`,
+                cancelButtonText: `ยกเลิก`,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  confirm_status = true
+                  return true
+                } else {
+                  confirm_status = false
+                  return false
+                }
+              })
+            }
+
+            Swal.fire({
+              title: 'กำลังเปิดหน้าชำระเงิน',
+              icon: 'info',
+              text: 'กรุณารอสักครู่...',
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              allowEnterKey: false,
+              showConfirmButton: false,
+            })
+            this.coursesService.createCoursePayment(course, confirm_status).subscribe(async (res) => {
+              await this.stripePromise.then((stripe) => {
+                stripe ? stripe.redirectToCheckout({
+                  sessionId: res.sessionId,
+                }) : null;
+              });
+            }, (err) => {
+              this.messageService.add({
+                severity: "error",
+                summary: "Error",
+                detail: "ไม่สามารถดึงข้อมูลราคาคอร์สได้: " + err.error.message,
+              });
+              Swal.close();
+            });
+          },
+            (err) => {
+              this.messageService.add({
+                severity: "error",
+                summary: "Error",
+                detail: "ไม่สามารถดึงข้อมูลราคาคอร์สได้: " + err.error.message,
+              });
+            })
+        } else {
+          this.coursesService.registerCourse(course.course_id).subscribe(
+            async (res) => {
               Swal.fire({
                 title: "ลงทะเบียนคอร์สเรียนสำเร็จ",
                 icon: "success",
                 text: "คุณสามารถเริ่มเรียนได้เลย ที่หน้าคอร์สเรียนของฉัน",
               });
               this.loadCourses();
+            },
+            (err) => {
+              this.messageService.add({
+                severity: "error",
+                summary: "Error",
+                detail: "ลงทะเบียนคอร์สเรียนไม่สำเร็จ: " + err.error.message,
+              });
             }
-            this.loadCourses();
-          },
-          (err) => {
-            this.messageService.add({
-              severity: "error",
-              summary: "Error",
-              detail: "ลงทะเบียนคอร์สเรียนไม่สำเร็จ: " + err.error.message,
-            });
-          }
-        );
+          );
+        }
       },
     });
   }

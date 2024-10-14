@@ -30,6 +30,7 @@
             "polyfills": ["zone.js"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+            "baseHref": "/lab/ubuntu/serv/90/",
             "assets": ["src/assets"],
             "styles": [
               "src/styles.scss",
