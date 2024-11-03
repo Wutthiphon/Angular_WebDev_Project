@@ -75,9 +75,7 @@
                                 <th>คำนำหน้า</th>
                                 <th>ชื่อ</th>
                                 <th>นามสกุล</th>
-                                <th>สถานะ</th>
-                                <th>หลักฐาน</th>
-                                <th style="width: 230px;text-align: center;">อนุมัติจบ</th>
+                                <th></th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-reg let-rowIndex="rowIndex">
@@ -87,44 +85,10 @@
                                 <td>{{ reg.users_account.first_name }}</td>
                                 <td>{{ reg.users_account.last_name }}</td>
                                 <td>
-                                    <b *ngIf="reg.registration_status == 0"
-                                        style="color: red;">ยังลงทะเบียนไม่สำเร็จ</b>
-                                    <b *ngIf="reg.registration_status == 1 && reg.users_reg_transfer_document.length > 0"
-                                        style="color: orange;">รอการตรวจสอบ</b>
-                                    <b style="color: red"
-                                        *ngIf="reg.registration_status == 1 && reg.users_reg_transfer_document.length == 0">รออัปโหลดหลักฐานการชำระเงิน</b>
-                                    <b *ngIf="reg.registration_status == 2 && reg.completion_status == 0"
-                                        style="color: green;">ลงทะเบียนสำเร็จ</b>
-                                    <b *ngIf="reg.registration_status == 2 && reg.completion_status == 1"
-                                        style="color: blue;">จบการศึกษา</b>
-                                </td>
-                                <td>
-                                    <p-button label="ดูสลิป" *ngIf="reg.users_reg_transfer_document.length > 0"
-                                        (onClick)="openReceiptDialog(reg.users_reg_transfer_document)"
-                                        styleClass="p-button-info p-button-sm p-button-rounded m-1"
-                                        icon="pi pi-eye"></p-button>
-
-                                    <p-button label="อนุมัติ"
-                                        styleClass="p-button-success p-button-sm p-button-rounded m-1"
-                                        (onClick)="onApproveRegisterCourse(reg.registration_id)"
-                                        *ngIf="reg.registration_status == 1 && reg.users_reg_transfer_document.length > 0"
-                                        icon="pi pi-check"></p-button>
-
-                                    <p-button label="ปฏิเสธ"
-                                        styleClass="p-button-danger p-button-sm p-button-rounded m-1"
-                                        (onClick)="onRejectRegisterCourse(reg.registration_id)"
-                                        *ngIf="reg.registration_status == 1 && reg.users_reg_transfer_document.length > 0"
-                                        icon="pi pi-times"></p-button>
-                                </td>
-                                <td>
                                     <div align="center" *ngIf="reg.registration_status == 2">
                                         <p-button label="การทำแบบทดสอบ" (click)="onViewExamTest(reg)"
                                             styleClass="p-button-secondary p-button-sm p-button-rounded m-1"
                                             icon="pi pi-eye"></p-button>
-                                        <p-button label="อนุมัติจบ" *ngIf="reg.completion_status == 0"
-                                            (click)="onApproveCompletionCourse(reg.registration_id)"
-                                            styleClass="p-button-success p-button-sm p-button-rounded m-1"
-                                            icon="pi pi-check"></p-button>
                                     </div>
                                 </td>
                             </tr>
