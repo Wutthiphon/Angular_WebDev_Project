@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { CoursesService } from "../../services/courses.service";
+import { AuthService } from "../../services/auth.service";
 import { TokenStorageService } from "../../services/token-storage.service";
 import { environment } from "../../../environments/environment";
 import { MessageService } from "primeng/api";
@@ -32,10 +33,18 @@ export class HomeComponent {
     private coursesService: CoursesService,
     private tokenStorage: TokenStorageService,
     private messageService: MessageService,
+    private authService: AuthService,
     private confirmationService: ConfirmationService,
     private router: Router,
     private route: ActivatedRoute
   ) {
+    this.authService.updateLoginLogoutChange().subscribe((res) => {
+      if(!this.tokenStorage.getToken()) {
+        this.can_register = false;
+        this.can_manage = false;
+      }
+    });
+
     this.route.queryParams.subscribe((params) => {
       if (params['payment'] == 'success') {
         Swal.fire({
