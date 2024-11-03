@@ -1,5 +1,5 @@
-<div class="main-container">
-  <div class="aside-container" [ngClass]="{'open': sidebarVisible}"
+<nav class="main-container">
+  <aside class="aside-container" [ngClass]="{'open': sidebarVisible}"
     [style]="{'box-shadow': 'rgba(0, 0, 0, 0.24) 0px 1px 4px'}">
     <div class="aside-content">
       <div class="header">
@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </aside>
 
   <p-menubar styleClass="navbar">
     <ng-template pTemplate="start">
@@ -73,9 +73,9 @@
       </div>
     </ng-template>
   </p-menubar>
-</div>
+</nav>
 
-<div class="page-content-container">
+<section class="page-content-container">
   <router-outlet></router-outlet>
   <div class="grid mt-5" style="font-size: 10pt;">
     <div class="col-12" align="center" style="color: #a0a0a0;">
@@ -83,7 +83,7 @@
       <label>E-Learning</label>
     </div>
   </div>
-</div>
+</section>
 
 <p-toast></p-toast>
 

@@ -128,7 +128,7 @@ export class HomeComponent {
           this.coursesService.getCoursePrice(course).subscribe(async (res) => {
             let confirm_status = false
             if (res.status) {
-              await Swal.fire({
+              let result = await Swal.fire({
                 title: 'คุณมีโปรโมชั่น ต้องการใช้หรือไม่ ?',
                 icon: 'question',
                 showDenyButton: true,
@@ -140,11 +140,18 @@ export class HomeComponent {
                 if (result.isConfirmed) {
                   confirm_status = true
                   return true
-                } else {
+                } else if (result.isDenied) {
                   confirm_status = false
                   return false
+                } else {
+                  return;
                 }
               })
+
+              if (result == undefined) {
+                Swal.close()
+                return;
+              }
             }
 
             Swal.fire({
